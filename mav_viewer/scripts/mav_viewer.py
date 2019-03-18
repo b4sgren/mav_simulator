@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
-#import state message here
+from dynamics.msg import State
 
 import numpy as np
 import pyqtgraph as pg
