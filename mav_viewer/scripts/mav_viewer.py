@@ -152,10 +152,10 @@ if __name__ == '__main__':
     """
 
     print "Initializing node"
-    # rospy.init_node("simulator", log_level=rospy.DEBUG) #use when running ros
+    rospy.init_node("simulator", log_level=rospy.DEBUG) #use when running ros
 
     #Initialize class here:
     mav = MAV_Viewer()
-    # mav.run() # will stay commented out while building rest of class
+    mav.run() # will stay commented out while building rest of class
 
     print "Done"
