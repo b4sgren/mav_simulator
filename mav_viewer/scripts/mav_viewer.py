@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import rospy
+#import state message here
+
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
@@ -22,7 +24,35 @@ class MAV_Viewer:
         self.plot_initialize = False
         self.points, self.mesh_colors = self.getMAVPoints()
 
-        #Set up publishers and stuff here
+        #Set up subscribers
+        #need to create the State message
+        self.pose_sub = rospy.Subscriber('true_state', State, self.state_callback, queue_size = 1)
+
+    def state_callback(self, msg):
+        mav_position = np.array([[msg.pn, msg.pe, -msg.h]]).T
+        R = self.EulerToRotation(msg.phi, msg.theta, msg.psi)
+        rotated_pts = self.rotatePoints(self.points, R)
+        trans_pts = self.translatePoints(rotated_pts, mav_position)
+
+        R2 = np.array([[0, 1, 0], [1, 0, 0], [0, 0, -1]]) # Convert to ENU coordinates for rendering
+        trans_pts = R2 @ trans_pts
+        mesh = self.pointsToMesh(trans_pts)
+
+        if not self.plot_initialize:
+            self.body = gl.GLMeshItem(vertexes=mesh, #defines mesh (Nx3x3)
+                                      vertexColors=self.mesh_colors,
+                                      drawEdges=True,
+                                      smooth=False, #speeds up rendering
+                                      computeNormals=False) # speeds up rendering
+            self.window.addItem(self.body)
+            self.plot_initialize = True
+        else:
+            self.body.setMeshData(vertexes=mesh, vertexColors=self.mesh_colors)
+
+        view_location = Vector(state.pe, state.pn, state.h) # in ENU frame
+        self.window.opts['center'] = view_location
+
+        self.application.processEvents() #redraw
 
     def getMAVPoints(self):
         points = np.array([[3.5, 0.0, 0.0],
@@ -122,6 +152,7 @@ if __name__ == '__main__':
     """
 
     print "Initializing node"
+    # rospy.init_node("simulator", log_level=rospy.DEBUG) #use when running ros
 
     #Initialize class here:
     mav = MAV_Viewer()
