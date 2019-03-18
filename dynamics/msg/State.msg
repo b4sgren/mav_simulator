@@ -1,22 +1,22 @@
 # State message for the MAV. Can be used for both true states and estimated
 
-double pn   # north mav_position
-double pe   # east mav_position
-double h    # altitude
-double phi
-double theta
-double psi
-double Va   # airspeed
-double alpha  # angle of attack
-double beta   #sideslip angle
-double p      #roll rate
-double q      # pitch rate
-double r      # yaw rate
-double Vg     # ground speed
-double gamma   #flight path angle
-double chi      #course angle
-double wn     # wind north
-double we     # wind east
-double bx     # gyro bias x
-double by     # gyro bias y
-double bz     # gyro bias z
+float32 pn   # north mav_position
+float32 pe   # east mav_position
+float32 h    # altitude
+float32 phi
+float32 theta
+float32 psi
+float32 Va   # airspeed
+float32 alpha  # angle of attack
+float32 beta   #sideslip angle
+float32 p      #roll rate
+float32 q      # pitch rate
+float32 r      # yaw rate
+float32 Vg     # ground speed
+float32 gamma   #flight path angle
+float32 chi      #course angle
+float32 wn     # wind north
+float32 we     # wind east
+float32 bx     # gyro bias x
+float32 by     # gyro bias y
+float32 bz     # gyro bias z
