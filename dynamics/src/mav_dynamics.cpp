@@ -20,10 +20,43 @@ Dynamics::~Dynamics(){}
 
 void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
 {
-
+  //just update the wind here
 }
 
 void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
+{
+  //calc forces and moments
+  //calc derivatives
+  //update velocity data
+  //update and publish state
+}
+
+State Dynamics::derivatives(const State& x)
+{
+
+}
+
+void Dynamics::updateVelocityData()
+{
+
+}
+
+void Dynamics::calculateForcesAndMoments(const dynamics::ControlInputsConstPtr &msg)
+{
+
+}
+
+void Dynamics::calculateLongitudinalForces(double de)
+{
+
+}
+
+void Dynamics::calculateLateralForces(double da, double dr)
+{
+
+}
+
+void Dynamics::calculateThrustForce(double dt)
 {
 
 }

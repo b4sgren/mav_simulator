@@ -42,10 +42,18 @@ private:
   void windCallback(const dynamics::WindConstPtr &msg);
   void inputCallback(const dynamics::ControlInputsConstPtr &msg);
 
+  //Other functions
+  void updateVelocityData();
+  void calculateForcesAndMoments(const dynamics::ControlInputsConstPtr &msg);
+  void calculateLongitudinalForces(double de);
+  void calculateLateralForces(double da, double dr);
+  void calculateThrustForce(double dt);
+  State derivatives(const State& x);
+
   double Ts_, Va_, alpha_, beta_;
   StateVec x_;
   Eigen::Vector3d wind_;
-  Eigen::Vector3d forces;
+  Eigen::Matrix<double, 6, 1> forces;
 
 
 };
