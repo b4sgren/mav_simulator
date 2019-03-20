@@ -13,6 +13,14 @@ namespace dyn
 class Dynamics
 {
 public:
+  enum
+  {
+    POS = 0,
+    VEL = 3,
+    ATT = 6,
+    OMEGA = 10
+  };
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   Dynamics();
   ~Dynamics();
 
