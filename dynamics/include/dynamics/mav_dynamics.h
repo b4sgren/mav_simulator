@@ -2,7 +2,9 @@
 #define MAV_DYNAMICS
 
 #include <ros/ros.h>
-// #include <msg/State>
+#include <dynamics/State.h>
+#include <dynamics/Wind.h>
+#include <dynamics/ControlInputs.h>
 #include <Eigen/Core>
 #include <cmath>
 
@@ -21,12 +23,24 @@ public:
     OMEGA = 10
   };
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
   Dynamics();
   ~Dynamics();
 
 private:
   ros::NodeHandle nh_;
   ros::NodeHandle nh_p_;
+
+  //Subscribers
+  ros::Subscriber wind_sub;
+  ros::Subscriber inputs_sub;
+
+  //Publishers
+  ros::Publisher state_pub;
+
+  //callbacks
+  void windCallback(const dynamics::WindConstPtr &msg);
+  void inputCallback(const dynamics::ControlInputsConstPtr &msg);
 
   double Ts_, Va_, alpha_, beta_;
   StateVec x_;

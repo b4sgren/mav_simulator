@@ -52,6 +52,8 @@ find_package(Eigen3 REQUIRED)
  add_message_files(
    FILES
    State.msg
+   Wind.msg
+   ControlInputs.msg
  )
 
 ## Generate services in the 'srv' folder
