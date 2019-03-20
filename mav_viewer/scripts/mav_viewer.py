@@ -7,10 +7,12 @@ import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
 import pyqtgraph.Vector as Vector
+from PyQt5.QtGui import QOpenGLContext
 
 class MAV_Viewer:
     def __init__(self):
         self.application = pg.QtGui.QApplication([])
+        # self.application.thread
         self.window = gl.GLViewWidget()
         self.window.setWindowTitle('Flight Simulator')
         self.window.setGeometry(0, 0, 750, 750)
@@ -25,7 +27,6 @@ class MAV_Viewer:
         self.points, self.mesh_colors = self.getMAVPoints()
 
         #Set up subscribers
-        #need to create the State message
         self.pose_sub = rospy.Subscriber('true_state', State, self.state_callback, queue_size = 1)
 
     def state_callback(self, msg):
@@ -44,7 +45,11 @@ class MAV_Viewer:
                                       drawEdges=True,
                                       smooth=False, #speeds up rendering
                                       computeNormals=False) # speeds up rendering
-            self.window.addItem(self.body)
+            print "here"
+            # self.body.moveToThread(self.application.thread) #this doesn't work
+            # self.window.moveToThread(self.application.thread)
+            self.window.addItem(self.body) # TODO Cannot make QOpenGLContext current in a different thread
+            print "hey"
             self.plot_initialize = True
         else:
             self.body.setMeshData(vertexes=mesh, vertexColors=self.mesh_colors)
