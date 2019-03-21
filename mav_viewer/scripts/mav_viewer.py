@@ -5,6 +5,8 @@ import pyqtgraph.Vector as Vector
 import sys
 sys.path.append('..')
 
+from threading import Lock
+
 class MAV_Viewer:
     def __init__(self):
         self.application = pg.QtGui.QApplication([])
@@ -20,6 +22,8 @@ class MAV_Viewer:
         self.window.raise_()
         self.plot_initialize = False
         self.points, self.mesh_colors = self.getMAVPoints()
+
+        self.app_lock = Lock()
 
     def getMAVPoints(self):
         points = np.array([[3.5, 0.0, 0.0],

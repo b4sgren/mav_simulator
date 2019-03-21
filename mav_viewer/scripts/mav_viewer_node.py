@@ -4,6 +4,7 @@ from dynamics.msg import State
 
 from mav_viewer import MAV_Viewer as MAV
 import numpy as np
+import pyqtgraph.opengl as gl
 
 class Viewer:
     def __init__(self):
