@@ -31,7 +31,7 @@ void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
   //update and publish state
 }
 
-State Dynamics::derivatives(const State& x)
+StateVec Dynamics::derivatives(const StateVec& x)
 {
 
 }
