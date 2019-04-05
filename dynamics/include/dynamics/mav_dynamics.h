@@ -48,7 +48,7 @@ private:
   void calculateLongitudinalForces(double de);
   void calculateLateralForces(double da, double dr);
   void calculateThrustForce(double dt);
-  State derivatives(const State& x);
+  StateVec derivatives(const StateVec& x);
 
   double Ts_, Va_, alpha_, beta_;
   StateVec x_;
