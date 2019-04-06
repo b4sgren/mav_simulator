@@ -20,7 +20,9 @@ public:
     POS = 0,
     VEL = 3,
     ATT = 6,
-    OMEGA = 10
+    OMEGA = 10,
+    F = 0,
+    M = 3
   };
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
@@ -54,7 +56,7 @@ private:
   double Ts_, Va_, alpha_, beta_;
   StateVec x_;
   Eigen::Vector3d wind_;
-  Eigen::Matrix<double, 6, 1> forces;
+  Eigen::Matrix<double, 6, 1> forces_;
 
   //Parameters from the yaml file
   double mass, gamma, gamma1, gamma2, gamma3, gamma4, gamma5, gamma6, gamma7, gamma8;
