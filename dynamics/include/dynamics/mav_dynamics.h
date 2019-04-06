@@ -8,7 +8,7 @@
 #include <Eigen/Core>
 #include <cmath>
 
-typedef Eigen::Matrix<double, 12, 1> StateVec;
+typedef Eigen::Matrix<double, 13, 1> StateVec;
 namespace dyn
 {
 
