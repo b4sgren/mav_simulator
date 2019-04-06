@@ -49,11 +49,15 @@ private:
   void calculateLateralForces(double da, double dr);
   void calculateThrustForce(double dt);
   StateVec derivatives(const StateVec& x);
+  void loadParams();
 
   double Ts_, Va_, alpha_, beta_;
   StateVec x_;
   Eigen::Vector3d wind_;
   Eigen::Matrix<double, 6, 1> forces;
+
+  //Parameters from the yaml file
+  double mass, gamma, gamma1, gamma2, gamma3, gamma4, gamma5, gamma6, gamma7, gamma8;
 
 
 };
