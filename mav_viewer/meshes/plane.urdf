@@ -1,0 +1,8 @@
+<link name="plane"
+  <visual>
+    <origin rpy="0.0 0 0" xyz="0 0 0"/>
+    <geometry>
+     <mesh filename="package://mav_viewer/meshes/plane.dae" />
+    </geometry>
+  </visual>
+</link>
