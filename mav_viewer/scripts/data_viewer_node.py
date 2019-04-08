@@ -97,15 +97,33 @@ class StateViewer:
 
 
         self.true_state_sub = rospy.Subscriber('true_state', State, self.state_callback, queue_size=1)
-        # self.est_state_sub = rospy.Subscriber('estimated_state', State, self.estimated_callback, queue_size = 1)
-        # self.commanded_sub = rospy.Subscriber('commanded_state', State, self.commanded_callback, queue_size = 1)
+        self.est_state_sub = rospy.Subscriber('estimated_state', State, self.estimated_callback, queue_size = 1)
+        self.commanded_sub = rospy.Subscriber('commanded_state', State, self.commanded_callback, queue_size = 1)
+
+    def estimated_callback(self, msg):
+        estimated_state_list = [msg.pn, msg.pe, msg.h,
+                                msg.Va, msg.alpha, msg.beta,
+                                msg.phi, msg.theta, msg.chi,
+                                msg.p, msg.q, msg.r,
+                                msg.Vg, msg.wn, msg.we, msg.psi,
+                                msg.bx, msg.by, msg.bz]
+        self.plotter.add_vector_measurement('estimated_state', estimated_state_list, self.time)
+
+        # Update and display the plot
+        self.plotter.update_plots() # TODO How to guarantee that all 3 msgs have been received (make a member variable *_list and update in everyfunction)
+
+        # increment time
+        self.time += ts # This will need to change
+
+    def commanded_callback(self, msg):
+        commands = [msg.h, # h_c
+                    msg.Va, # Va_c
+                    msg.phi, # phi_c
+                    msg.theta, # theta_c
+                    msg.chi] # chi_c
+        self.plotter.add_vector_measurement('commands', commands, self.time)
 
     def state_callback(self, msg):
-        # commands = [commanded_state.h, # h_c
-        #             commanded_state.Va, # Va_c
-        #             commanded_state.phi, # phi_c
-        #             commanded_state.theta, # theta_c
-        #             commanded_state.chi] # chi_c
         ## Add the state data in vectors
         # the order has to match the order in lines 72-76
         true_state_list = [msg.pn, msg.pe, msg.h,
@@ -114,21 +132,7 @@ class StateViewer:
                            msg.p, msg.q, msg.r,
                            msg.Vg, msg.wn, msg.we, msg.psi,
                            msg.bx, msg.by, msg.bz]
-        # estimated_state_list = [estimated_state.pn, estimated_state.pe, estimated_state.h,
-        #                         estimated_state.Va, estimated_state.alpha, estimated_state.beta,
-        #                         estimated_state.phi, estimated_state.theta, estimated_state.chi,
-        #                         estimated_state.p, estimated_state.q, estimated_state.r,
-        #                         estimated_state.Vg, estimated_state.wn, estimated_state.we, estimated_state.psi,
-        #                         estimated_state.bx, estimated_state.by, estimated_state.bz]
         self.plotter.add_vector_measurement('true_state', true_state_list, self.time)
-        # self.plotter.add_vector_measurement('estimated_state', estimated_state_list, self.time)
-        # self.plotter.add_vector_measurement('commands', commands, self.time)
-
-        # Update and display the plot
-        self.plotter.update_plots()
-
-        # increment time
-        self.time += ts
 
     def run(self):
         while not rospy.is_shutdown():
