@@ -57,6 +57,7 @@ StateVec Dynamics::derivatives(const StateVec& x)
 
   xdot.segment<4>(ATT) = 0.5 * tools::skew(omega) * e;
 
+  
 }
 
 void Dynamics::updateVelocityData()
