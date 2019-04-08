@@ -59,4 +59,13 @@ namespace tools
 
     return R;
   }
+
+  Eigen::Matrix4d skew(const Eigen::Vector3d& w)
+  {
+    double p{w(0)}, q{w(1)}, r{w(2)};
+    Eigen::Matrix4d temp;
+    temp << 0, -p, -q, -r, p, 0, r, -q, q, -r, 0, p, r, q, -p, 0;
+
+    return temp;
+  }
 }
