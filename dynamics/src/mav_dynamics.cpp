@@ -43,7 +43,17 @@ StateVec Dynamics::derivatives(const StateVec& x)
   Eigen::Vector3d f = forces_.segment<3>(F);
   Eigen::Vector3d moments = forces_.segment<3>(M);
 
-  // TODO create my tools library
+  Eigen::Matrix3d R_b2v = tools::Quaternion2Rotation(e);
+
+  StateVec xdot;
+  xdot.segment<3>(POS) = R_b2v * v;
+
+  double var1 = omega(2) * v(1) - omega(1) * v(2);
+  double var2 = omega(0) * v(2) - omega(2) * v(0);
+  double var3 = omega(2) * v(0) - omega(0) * v(2);
+  Eigen::Vector3d temp;
+  temp << var1, var2, var3;
+  xdot.segment<3>(VEL) = temp + 1.0/mass * f;
 
 }
 
