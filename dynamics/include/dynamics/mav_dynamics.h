@@ -7,6 +7,7 @@
 #include <dynamics/ControlInputs.h>
 #include <Eigen/Core>
 #include <cmath>
+#include "tools/rotations.h"
 
 typedef Eigen::Matrix<double, 13, 1> StateVec;
 namespace dyn

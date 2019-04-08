@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   message_generation
+  tools
 )
 find_package(Eigen3 REQUIRED)
 
@@ -107,8 +108,8 @@ find_package(Eigen3 REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES dynamics
-  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+  LIBRARIES tools 
+  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime tools
 #  DEPENDS system_lib
 )
 
