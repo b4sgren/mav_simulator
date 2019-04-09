@@ -177,7 +177,7 @@ void Dynamics::calculateLongitudinalForces(double de)
 
   double temp = (CL_0 + CL_alpha*alpha_);
   double CDalpha = CD_p + (temp*temp)/(PI * e * AR);
-  double F_drag = q_bar * (CD_alpha + CD_q*c2V*q + CD_de*de);
+  double F_drag = q_bar * (CDalpha + CD_q*c2V*q + CD_de*de);
 
   Eigen::Matrix2d R_s2b;
   R_s2b << calpha, -salpha, salpha, calpha;
@@ -255,5 +255,24 @@ void Dynamics::loadParams()
   nh_.param<double>("C_m_alpha", Cm_alpha, 0.0);
   nh_.param<double>("C_m_q", Cm_q, 0.0);
   nh_.param<double>("C_m_delta_e", Cm_de, 0.0);
+  nh_.param<double>("b", b, 0.0);
+  nh_.param<double>("C_Y_0", CY_0, 0.0);
+  nh_.param<double>("C_Y_beta", CY_beta, 0.0);
+  nh_.param<double>("C_Y_p", CY_p, 0.0);
+  nh_.param<double>("C_Y_r", CY_r, 0.0);
+  nh_.param<double>("C_Y_delta_a", CY_da, 0.0);
+  nh_.param<double>("C_Y_delta_r", CY_dr, 0.0);
+  nh_.param<double>("C_ell_0", Cell_0, 0.0);
+  nh_.param<double>("C_ell_beta", Cell_beta, 0.0);
+  nh_.param<double>("C_ell_p", Cell_p, 0.0);
+  nh_.param<double>("C_ell_r", Cell_r, 0.0);
+  nh_.param<double>("C_ell_delta_a", Cell_da, 0.0);
+  nh_.param<double>("C_ell_delta_r", Cell_dr, 0.0);
+  nh_.param<double>("C_n_0", Cn_0, 0.0);
+  nh_.param<double>("C_n_beta", Cn_beta, 0.0);
+  nh_.param<double>("C_n_p", Cn_p, 0.0);
+  nh_.param<double>("C_n_r", Cn_r, 0.0);
+  nh_.param<double>("C_n_delta_a", Cn_da, 0.0);
+  nh_.param<double>("C_n_delta_r", Cn_dr, 0.0);
 }
 }

@@ -67,10 +67,13 @@ private:
   double Jy, g_;
   bool wind_init{false};
 
-  double M_, rho, S_wing, c, alpha0, e, AR;
+  double M_, rho, S_wing, c, alpha0, e, AR, b;
   double CL_0, CL_alpha, CL_q, CL_de;
   double CD_p, CD_alpha, CD_q, CD_de, CD_0;
   double Cm_0, Cm_alpha, Cm_q, Cm_de;
+  double CY_0, CY_beta, CY_p, CY_r, CY_da, CY_dr;
+  double Cell_0, Cell_beta, Cell_p, Cell_r, Cell_da, Cell_dr;
+  double Cn_0, Cn_beta, Cn_p, Cn_r, Cn_da, Cn_dr;
 
 };
 }
