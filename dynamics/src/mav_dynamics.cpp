@@ -55,9 +55,6 @@ void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
   state.pn = x_(POS);
   state.pe = x_(POS+1);
   state.h = -x_(POS+2);
-  // state.u = x_(VEL);
-  // state.v = x_(VEL+1);
-  // state.w = x_(VEL+2);
   Eigen::Vector3d euler = tools::Quaternion2Euler(x_.segment<4>(ATT));
   state.phi = euler(0);
   state.theta = euler(1);
@@ -150,6 +147,9 @@ void Dynamics::calcGammaAndChi()
 void Dynamics::calculateForcesAndMoments(const dynamics::ControlInputsConstPtr &msg)
 {
   double de{msg->de}, dt{msg->dt}, da{msg->da}, dr{msg->dr};
+  calculateLongitudinalForces(de);
+  calculateLateralForces(da, dr);
+  calculateThrustForce(dt);
 }
 
 void Dynamics::calculateLongitudinalForces(double de)
