@@ -25,7 +25,6 @@ Dynamics::~Dynamics(){}
 
 void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
 {
-  //TODO Something is wrong here
   //update wind
   if(!wind_init)
   {
@@ -152,7 +151,8 @@ void Dynamics::calculateForcesAndMoments(const dynamics::ControlInputsConstPtr &
   forces_.segment<3>(F) = R_v2b * weight;
 
   //update other forces
-  double de{msg->de}, dt{msg->dt}, da{msg->da}, dr{msg->dr};
+//  double de{msg->de}, dt{msg->dt}, da{msg->da}, dr{msg->dr};
+  double de{-1.24778073e-1}, dt{6.76752115e-1}, da{1.83617600e-3}, dr{-3.0262668e-4}; //This is just for verification that this all works
   calculateLongitudinalForces(de);
   calculateLateralForces(da, dr);
   calculateThrustForce(dt);
