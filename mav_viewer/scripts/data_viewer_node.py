@@ -1,7 +1,9 @@
+#!/usr/bin/env python
 import rospy
 
 from state_plotter.Plotter import Plotter
 from state_plotter.plotter_args import *
+from dynamics.msg import State
 
 class StateViewer:
     def __init__(self):
@@ -94,7 +96,7 @@ class StateViewer:
         self.plotter.define_input_vector('commands', ['h_c', 'Va_c', 'phi_c', 'theta_c', 'chi_c'])
         # plot timer
         self.time = 0.
-
+        self.ts = 0.02
 
         self.true_state_sub = rospy.Subscriber('true_state', State, self.state_callback, queue_size=1)
         self.est_state_sub = rospy.Subscriber('estimated_state', State, self.estimated_callback, queue_size = 1)
@@ -113,7 +115,7 @@ class StateViewer:
         self.plotter.update_plots() # TODO How to guarantee that all 3 msgs have been received (make a member variable *_list and update in everyfunction)
 
         # increment time
-        self.time += ts # This will need to change
+        self.time += self.ts # This will need to change
 
     def commanded_callback(self, msg):
         commands = [msg.h, # h_c
