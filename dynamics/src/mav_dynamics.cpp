@@ -25,8 +25,17 @@ Dynamics::~Dynamics(){}
 
 void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
 {
+  //TODO Something is wrong here
   //update wind
+  if(!wind_init)
+  {
+    // wind_ << msg.wn, msg.we, msg.wd;
+    wind_init = true;
+  }
+  Eigen::Vector3d gust;
+  // gust << msg.gust_n, msg.gust_e, msg.gust_d;
   //update velocity data
+  // updateVelocityData(gust);
 }
 
 void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
