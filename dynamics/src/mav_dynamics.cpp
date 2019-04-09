@@ -29,13 +29,13 @@ void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
   //update wind
   if(!wind_init)
   {
-    // wind_ << msg.wn, msg.we, msg.wd;
+    wind_ << msg->wn, msg->we, msg->wd;
     wind_init = true;
   }
   Eigen::Vector3d gust;
-  // gust << msg.gust_n, msg.gust_e, msg.gust_d;
+  gust << msg->gust_n, msg->gust_e, msg->gust_d;
   //update velocity data
-  // updateVelocityData(gust);
+  updateVelocityData(gust);
 }
 
 void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
@@ -149,7 +149,7 @@ void Dynamics::calcGammaAndChi()
 
 void Dynamics::calculateForcesAndMoments(const dynamics::ControlInputsConstPtr &msg)
 {
-
+  double de{msg->de}, dt{msg->dt}, da{msg->da}, dr{msg->dr};
 }
 
 void Dynamics::calculateLongitudinalForces(double de)
