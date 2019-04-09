@@ -164,13 +164,32 @@ void Dynamics::calculateLongitudinalForces(double de)
   double q_bar{0.5 * rho * Va_*Va_ * S_wing};
   double e_negM = exp(-M_ * (alpha_ - alpha0));
   double e_posM = exp(M_ * (alpha_ + alpha0));
+  double q = x_(OMEGA+1);
 
   double sigma_alpha = (1+e_negM + e_posM)/((1+e_negM)*(1+e_posM));
   double salpha = sin(alpha_);
   double calpha = cos(alpha_);
 
-  double CLalpha = (1 - sigma_alpha)*(CL_0 + CL_alpha) +
+  double CLalpha = (1 - sigma_alpha)*(CL_0 + CL_alpha * alpha_) +
                    sigma_alpha * (2 * tools::sign(alpha_) * salpha*salpha * calpha);
+
+  double F_lift = q_bar * (CLalpha + CL_q*c2V*q + CL_de*de);
+
+  double temp = (CL_0 + CL_alpha*alpha_);
+  double CDalpha = CD_p + (temp*temp)/(PI * e * AR);
+  double F_drag = q_bar * (CD_alpha + CD_q*c2V*q + CD_de*de);
+
+  Eigen::Matrix2d R_s2b;
+  R_s2b << calpha, -salpha, salpha, calpha;
+  Eigen::Vector2d fxz;
+  fxz << -F_drag, -F_lift;
+  fxz = R_s2b * fxz;
+
+  double m = q_bar * c * (Cm_0 + Cm_alpha*alpha_ + Cm_q*c2V*q + Cm_de*de);
+
+  forces_(0) = fxz(0);
+  forces_(2) = fxz(1);
+  forces_(4) = m;
 }
 
 void Dynamics::calculateLateralForces(double da, double dr)
@@ -222,6 +241,7 @@ void Dynamics::loadParams()
   nh_.param<double>("c", c, 0.0);
   nh_.param<double>("alpha0", alpha0, 0.0);
   nh_.param<double>("e", e, 0.0);
+  nh_.param<double>("AR", AR, 0.0);
   nh_.param<double>("C_L_0", CL_0, 0.0);
   nh_.param<double>("C_L_alpha", CL_alpha, 0.0);
   nh_.param<double>("C_L_q", CL_q, 0.0);
