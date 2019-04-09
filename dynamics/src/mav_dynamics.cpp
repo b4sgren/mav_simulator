@@ -39,7 +39,7 @@ StateVec Dynamics::derivatives(const StateVec& x)
   Eigen::Vector3d p = x_.segment<3>(POS);
   Eigen::Vector3d v = x_.segment<3>(VEL);
   Eigen::Vector4d e = x_.segment<4>(ATT);
-  Eigen::Vector3d omega = x_.segment<3>(OMEGA);
+  Eigen::Vector3d w = x_.segment<3>(OMEGA);
   Eigen::Vector3d f = forces_.segment<3>(F);
   Eigen::Vector3d moments = forces_.segment<3>(M);
 
@@ -48,16 +48,20 @@ StateVec Dynamics::derivatives(const StateVec& x)
   StateVec xdot;
   xdot.segment<3>(POS) = R_b2v * v;
 
-  double var1 = omega(2) * v(1) - omega(1) * v(2);
-  double var2 = omega(0) * v(2) - omega(2) * v(0);
-  double var3 = omega(2) * v(0) - omega(0) * v(2);
+  double var1 = w(2) * v(1) - w(1) * v(2);
+  double var2 = w(0) * v(2) - w(2) * v(0);
+  double var3 = w(2) * v(0) - w(0) * v(2);
   Eigen::Vector3d temp;
   temp << var1, var2, var3;
   xdot.segment<3>(VEL) = temp + 1.0/mass * f;
 
-  xdot.segment<4>(ATT) = 0.5 * tools::skew(omega) * e;
+  xdot.segment<4>(ATT) = 0.5 * tools::skew(w) * e;
 
-  
+  xdot(OMEGA) = gamma1 * w(0) * w(1) - gamma2*w(1)*w(2) + gamma3 * moments(0) + gamma4*moments(2);
+  xdot(OMEGA+1) = gamma5*w(0)*w(2) - gamma6*(w(0)*w(0) - w(2)*w(2)) + Jy*moments(1);
+  xdot(OMEGA+2) = gamma7*w(0)*w(1) - gamma1*w(1)*w(2) + gamma4*moments(0) + gamma8*moments(2);
+
+  return xdot;
 }
 
 void Dynamics::updateVelocityData()
@@ -115,5 +119,6 @@ void Dynamics::loadParams()
   nh_.param<double>("gamma6", gamma6, 0.0);
   nh_.param<double>("gamma7", gamma7, 0.0);
   nh_.param<double>("gamma8", gamma8, 0.0);
+  nh_.param<double>("Jy", Jy, 0.0);
 }
 }
