@@ -13,6 +13,8 @@ Dynamics::Dynamics() : nh_(ros::NodeHandle()), nh_p_("~")
 
   loadParams();
   forces_ = Eigen::Matrix<double, 6, 1>::Zero();
+  chi_ = 0.0;
+  flight_path_ = 0.0;
 
   wind_sub = nh_.subscribe("wind", 1, &Dynamics::windCallback, this);
   inputs_sub = nh_.subscribe("surface_commands", 1, &Dynamics::inputCallback, this);
@@ -23,7 +25,8 @@ Dynamics::~Dynamics(){}
 
 void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
 {
-  //update wind and velocity data
+  //update wind
+  //update velocity data
 }
 
 void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
@@ -36,8 +39,33 @@ void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
   StateVec k3 = derivatives(x_ + Ts_/2.0 * k2);
   StateVec k4 = derivatives(x_ + Ts_ * k3);
   x_ += Ts_/6.0 * (k1 + 2*k2 + 2*k3 + k4);
-  //update velocity data
+
   //update and publish state
+  calcGammaAndChi();
+  dynamics::State state;
+  state.pn = x_(POS);
+  state.pe = x_(POS+1);
+  state.h = -x_(POS+2);
+  // state.u = x_(VEL);
+  // state.v = x_(VEL+1);
+  // state.w = x_(VEL+2);
+  Eigen::Vector3d euler = tools::Quaternion2Euler(x_.segment<4>(ATT));
+  state.phi = euler(0);
+  state.theta = euler(1);
+  state.psi = euler(2);
+  state.p = x_(OMEGA);
+  state.q = x_(OMEGA+1);
+  state.r = x_(OMEGA+2);
+  state.Va = Va_;
+  state.alpha = alpha_;
+  state.beta = beta_;
+  state.wn = wind_(0);
+  state.we = wind_(1);
+  state.Vg = x_.segment<3>(VEL).transpose() * x_.segment<3>(VEL);
+  state.gamma = flight_path_;
+  state.chi = chi_;
+
+  state_pub.publish(state);
 }
 
 StateVec Dynamics::derivatives(const StateVec& x)
@@ -72,8 +100,8 @@ StateVec Dynamics::derivatives(const StateVec& x)
 
 void Dynamics::updateVelocityData(const Eigen::Vector3d& gust)
 {
-  Eigen::Matrix3d R_v2b = tools::Quaternion2Rotation(x_.segment<4>(ATT));
-  wind_ = R_v2b * wind_ + gust;
+  Eigen::Matrix3d R_b2v = tools::Quaternion2Rotation(x_.segment<4>(ATT));
+  wind_ = R_b2v * wind_ + gust;
   Eigen::Vector3d V = x_.segment<3>(VEL);
 
   //Compute Va
@@ -92,6 +120,22 @@ void Dynamics::updateVelocityData(const Eigen::Vector3d& gust)
     beta_ = tools::sign(Vr(1)) * PI/2.0;
   else
     beta_ = asin(Vr(1)/Va_);
+}
+
+void Dynamics::calcGammaAndChi()
+{
+  Eigen::Matrix3d R_v2b = tools::Quaternion2Rotation(x_.segment<4>(ATT));
+  Eigen::Vector3d Vg = R_v2b * x_.segment<3>(VEL);
+
+  flight_path_ = asin(-Vg(0)/(tools::norm(Vg)));
+
+  Eigen::Vector3d Vgh = Vg * cos(flight_path_);
+  Eigen::Vector3d e1{1, 0, 0};
+
+  double temp = e1.transpose() * Vgh;
+  chi_ = acos(temp/tools::norm(Vgh));
+  if(Vgh(0) < 0)
+    chi_ *= -1;
 }
 
 void Dynamics::calculateForcesAndMoments(const dynamics::ControlInputsConstPtr &msg)

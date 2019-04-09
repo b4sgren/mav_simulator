@@ -75,6 +75,10 @@ namespace tools
       return 1;
     else
       return -1;
+  }
 
+  double norm(const Eigen::Vector3d& v)
+  {
+    return sqrt(v.transpose() * v);
   }
 }

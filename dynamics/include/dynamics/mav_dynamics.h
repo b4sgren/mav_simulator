@@ -47,6 +47,7 @@ private:
 
   //Other functions
   void updateVelocityData(const Eigen::Vector3d& gust);
+  void calcGammaAndChi();
   void calculateForcesAndMoments(const dynamics::ControlInputsConstPtr &msg);
   void calculateLongitudinalForces(double de);
   void calculateLateralForces(double da, double dr);
@@ -54,7 +55,7 @@ private:
   StateVec derivatives(const StateVec& x);
   void loadParams();
 
-  double Ts_, Va_, alpha_, beta_;
+  double Ts_, Va_, alpha_, beta_, chi_, flight_path_;
   StateVec x_;
   Eigen::Vector3d wind_;
   Eigen::Matrix<double, 6, 1> forces_;

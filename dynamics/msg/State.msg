@@ -17,6 +17,3 @@ float32 gamma   #flight path angle
 float32 chi      #course angle
 float32 wn     # wind north
 float32 we     # wind east
-float32 bx     # gyro bias x
-float32 by     # gyro bias y
-float32 bz     # gyro bias z
