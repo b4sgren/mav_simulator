@@ -23,7 +23,7 @@ Dynamics::~Dynamics(){}
 
 void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
 {
-  //just update the wind here
+  //update wind and velocity data
 }
 
 void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
@@ -70,9 +70,28 @@ StateVec Dynamics::derivatives(const StateVec& x)
   return xdot;
 }
 
-void Dynamics::updateVelocityData()
+void Dynamics::updateVelocityData(const Eigen::Vector3d& gust)
 {
+  Eigen::Matrix3d R_v2b = tools::Quaternion2Rotation(x_.segment<4>(ATT));
+  wind_ = R_v2b * wind_ + gust;
+  Eigen::Vector3d V = x_.segment<3>(VEL);
 
+  //Compute Va
+  Eigen::Vector3d Vr = V - wind_;
+  Va_ = sqrt(Vr.transpose() * Vr);
+
+  //update angle of attack
+  if(Vr(0) == 0)
+    alpha_ = tools::sign(Vr(2)) * PI/2.0;
+  else
+    alpha_ = atan2(Vr(2), Vr(0));
+
+  //update sideslip angle
+  double temp = sqrt(Vr(0)*Vr(0) + Vr(2)*Vr(2));
+  if(temp == 0)
+    beta_ = tools::sign(Vr(1)) * PI/2.0;
+  else
+    beta_ = asin(Vr(1)/Va_);
 }
 
 void Dynamics::calculateForcesAndMoments(const dynamics::ControlInputsConstPtr &msg)

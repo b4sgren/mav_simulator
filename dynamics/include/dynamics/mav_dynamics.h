@@ -46,7 +46,7 @@ private:
   void inputCallback(const dynamics::ControlInputsConstPtr &msg);
 
   //Other functions
-  void updateVelocityData();
+  void updateVelocityData(const Eigen::Vector3d& gust);
   void calculateForcesAndMoments(const dynamics::ControlInputsConstPtr &msg);
   void calculateLongitudinalForces(double de);
   void calculateLateralForces(double da, double dr);
@@ -58,6 +58,8 @@ private:
   StateVec x_;
   Eigen::Vector3d wind_;
   Eigen::Matrix<double, 6, 1> forces_;
+
+  const double PI{3.14159265};
 
   //Parameters from the yaml file
   double mass, gamma, gamma1, gamma2, gamma3, gamma4, gamma5, gamma6, gamma7, gamma8;
