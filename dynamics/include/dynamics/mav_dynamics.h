@@ -64,7 +64,7 @@ private:
 
   //Parameters from the yaml file
   double mass, gamma, gamma1, gamma2, gamma3, gamma4, gamma5, gamma6, gamma7, gamma8;
-  double Jy;
+  double Jy, g_;
   bool wind_init{false};
 
 };

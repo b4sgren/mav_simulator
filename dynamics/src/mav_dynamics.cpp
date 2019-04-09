@@ -146,6 +146,12 @@ void Dynamics::calcGammaAndChi()
 
 void Dynamics::calculateForcesAndMoments(const dynamics::ControlInputsConstPtr &msg)
 {
+  //Calculate gravity
+  Eigen::Matrix3d R_v2b = tools::Quaternion2Rotation(x_.segment<4>(ATT)).transpose();
+  Eigen::Vector3d weight{0, 0, mass * g_};
+  forces_.segment<3>(F) = R_v2b * weight;
+
+  //update other forces
   double de{msg->de}, dt{msg->dt}, da{msg->da}, dr{msg->dr};
   calculateLongitudinalForces(de);
   calculateLateralForces(da, dr);
@@ -198,5 +204,6 @@ void Dynamics::loadParams()
   nh_.param<double>("gamma7", gamma7, 0.0);
   nh_.param<double>("gamma8", gamma8, 0.0);
   nh_.param<double>("Jy", Jy, 0.0);
+  nh_.param<double>("gravity", g_, 9.81);
 }
 }
