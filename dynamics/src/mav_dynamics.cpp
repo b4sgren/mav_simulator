@@ -29,17 +29,23 @@ void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
 void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
 {
   //calc forces and moments
-  //calc derivatives
+  calculateForcesAndMoments(msg);
+  //4th order Runge-Kutta
+  StateVec k1 = derivatives(x_);
+  StateVec k2 = derivatives(x_ + Ts_/2.0 * k1);
+  StateVec k3 = derivatives(x_ + Ts_/2.0 * k2);
+  StateVec k4 = derivatives(x_ + Ts_ * k3);
+  x_ += Ts_/6.0 * (k1 + 2*k2 + 2*k3 + k4);
   //update velocity data
   //update and publish state
 }
 
 StateVec Dynamics::derivatives(const StateVec& x)
 {
-  Eigen::Vector3d p = x_.segment<3>(POS);
-  Eigen::Vector3d v = x_.segment<3>(VEL);
-  Eigen::Vector4d e = x_.segment<4>(ATT);
-  Eigen::Vector3d w = x_.segment<3>(OMEGA);
+  Eigen::Vector3d p = x.segment<3>(POS);
+  Eigen::Vector3d v = x.segment<3>(VEL);
+  Eigen::Vector4d e = x.segment<4>(ATT);
+  Eigen::Vector3d w = x.segment<3>(OMEGA);
   Eigen::Vector3d f = forces_.segment<3>(F);
   Eigen::Vector3d moments = forces_.segment<3>(M);
 
