@@ -211,12 +211,27 @@ void Dynamics::calculateLateralForces(double da, double dr)
   forces_(M) = l;
   forces_(M+2) = n;
   forces_(F+1) = fy;
-
 }
 
 void Dynamics::calculateThrustForce(double dt)
 {
+  double V_in = V_max * dt;
 
+  double a = (rho * pow(D_prop, 5))/pow(2*PI, 2) * C_Q0;
+  double b2 = (rho * pow(D_prop, 4) * C_Q1 * Va_)/(2*PI) + (KQ*KQ)/R_motor;
+  double c2 = rho * pow(D_prop,3) * C_Q2 * Va_*Va_ - (KQ*V_in)/R_motor + KQ + i0;
+
+  double Omega_op = (-b2 + sqrt(b2*b2) - 4*a*c2)/(2*a);
+  double J_op = (2 * PI * Va_)/(Omega_op * D_prop);
+
+  double CT = C_T2 * (J_op*J_op) + C_T1*J_op + C_T0;
+  double CQ = C_Q2*(J_op*J_op) + C_Q2*J_op + C_Q0;
+
+  double l = KQ * (1.0/R_motor * (V_in - KQ*Omega_op) - i0);
+  double f = CT * (rho * (Omega_op * Omega_op) * pow(D_prop, 4))/(4*PI*PI);
+
+  forces_(F) += f;
+  forces_(M) -= l;
 }
 
 void Dynamics::loadParams()
@@ -301,5 +316,6 @@ void Dynamics::loadParams()
   nh_.param<double>("C_T2", C_T2, 0.0);
   nh_.param<double>("C_T1", C_T1, 0.0);
   nh_.param<double>("C_T0", C_T0, 0.0);
+  nh_.param<double>("V_max", V_max, 0.0);
 }
 }
