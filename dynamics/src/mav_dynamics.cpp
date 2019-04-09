@@ -187,13 +187,30 @@ void Dynamics::calculateLongitudinalForces(double de)
 
   double m = q_bar * c * (Cm_0 + Cm_alpha*alpha_ + Cm_q*c2V*q + Cm_de*de);
 
-  forces_(0) = fxz(0);
-  forces_(2) = fxz(1);
-  forces_(4) = m;
+  forces_(F) = fxz(0);
+  forces_(F+2) = fxz(1);
+  forces_(M+1) = m;
 }
 
 void Dynamics::calculateLateralForces(double da, double dr)
 {
+  double p{x_(OMEGA)}, r{x_(OMEGA+2)};
+
+  double b2V = b/(2*Va_);
+  double q_bar = 0.5 * rho * Va_*Va_ * S_wing;
+
+  double fy = q_bar * (CY_0 + CY_beta*beta_ + CY_p*b2V*p + CY_r*b2V*r +
+               CY_da*da + CY_dr*dr);
+
+  double l = q_bar * b * (Cell_0 + Cell_beta*beta_ + Cell_p*b2V*p +
+              Cell_r*b2V*r + Cell_da*da + Cell_dr*dr);
+
+  double n = q_bar * b * (Cn_0 + Cn_beta*beta_ + Cn_p*b2V*p + Cn_r*b2V*r +
+              Cn_da*da + Cn_dr*dr);
+
+  forces_(M) = l;
+  forces_(M+2) = n;
+  forces_(F+1) = fy;
 
 }
 
