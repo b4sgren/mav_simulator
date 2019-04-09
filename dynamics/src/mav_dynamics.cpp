@@ -16,6 +16,13 @@ Dynamics::Dynamics() : nh_(ros::NodeHandle()), nh_p_("~")
   chi_ = 0.0;
   flight_path_ = 0.0;
 
+  //Need to set the state to trim for testing. For debugging only
+  StateVec temp;
+  temp << 0, 0, -100, 24.9687427, 0, 1.24975519, .999687380, 0, .0250028452, 0, 0, 0, 0;
+  x_ = temp;
+  alpha_ = 0.05001105232205032;
+  beta_ = 0.0;
+
   wind_sub = nh_.subscribe("wind", 1, &Dynamics::windCallback, this);
   inputs_sub = nh_.subscribe("surface_commands", 1, &Dynamics::inputCallback, this);
   state_pub = nh_.advertise<dynamics::State>("state", 1);
@@ -40,7 +47,7 @@ void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
 void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
 {
   //calc forces and moments
-  calculateForcesAndMoments(msg);
+  calculateForcesAndMoments(msg); //Comes out wrong
   //4th order Runge-Kutta
   StateVec k1 = derivatives(x_);
   StateVec k2 = derivatives(x_ + Ts_/2.0 * k1);
@@ -187,8 +194,8 @@ void Dynamics::calculateLongitudinalForces(double de)
 
   double m = q_bar * c * (Cm_0 + Cm_alpha*alpha_ + Cm_q*c2V*q + Cm_de*de);
 
-  forces_(F) = fxz(0);
-  forces_(F+2) = fxz(1);
+  forces_(F) += fxz(0);
+  forces_(F+2) += fxz(1);
   forces_(M+1) = m;
 }
 
@@ -210,7 +217,7 @@ void Dynamics::calculateLateralForces(double da, double dr)
 
   forces_(M) = l;
   forces_(M+2) = n;
-  forces_(F+1) = fy;
+  forces_(F+1) += fy;
 }
 
 void Dynamics::calculateThrustForce(double dt)
@@ -221,7 +228,7 @@ void Dynamics::calculateThrustForce(double dt)
   double b2 = (rho * pow(D_prop, 4) * C_Q1 * Va_)/(2*PI) + (KQ*KQ)/R_motor;
   double c2 = rho * pow(D_prop,3) * C_Q2 * Va_*Va_ - (KQ*V_in)/R_motor + KQ + i0;
 
-  double Omega_op = (-b2 + sqrt(b2*b2) - 4*a*c2)/(2*a);
+  double Omega_op = (-b2 + sqrt(b2*b2 - 4*a*c2))/(2*a); //This is slightly off
   double J_op = (2 * PI * Va_)/(Omega_op * D_prop);
 
   double CT = C_T2 * (J_op*J_op) + C_T1*J_op + C_T0;
