@@ -160,7 +160,17 @@ void Dynamics::calculateForcesAndMoments(const dynamics::ControlInputsConstPtr &
 
 void Dynamics::calculateLongitudinalForces(double de)
 {
+  double c2V{c/(2 * Va_)};
+  double q_bar{0.5 * rho * Va_*Va_ * S_wing};
+  double e_negM = exp(-M_ * (alpha_ - alpha0));
+  double e_posM = exp(M_ * (alpha_ + alpha0));
 
+  double sigma_alpha = (1+e_negM + e_posM)/((1+e_negM)*(1+e_posM));
+  double salpha = sin(alpha_);
+  double calpha = cos(alpha_);
+
+  double CLalpha = (1 - sigma_alpha)*(CL_0 + CL_alpha) +
+                   sigma_alpha * (2 * tools::sign(alpha_) * salpha*salpha * calpha);
 }
 
 void Dynamics::calculateLateralForces(double da, double dr)
@@ -205,5 +215,25 @@ void Dynamics::loadParams()
   nh_.param<double>("gamma8", gamma8, 0.0);
   nh_.param<double>("Jy", Jy, 0.0);
   nh_.param<double>("gravity", g_, 9.81);
+
+  nh_.param<double>("M", M_, 0.0);
+  nh_.param<double>("rho", rho, 0.0);
+  nh_.param<double>("S_wing", S_wing, 0.0);
+  nh_.param<double>("c", c, 0.0);
+  nh_.param<double>("alpha0", alpha0, 0.0);
+  nh_.param<double>("e", e, 0.0);
+  nh_.param<double>("C_L_0", CL_0, 0.0);
+  nh_.param<double>("C_L_alpha", CL_alpha, 0.0);
+  nh_.param<double>("C_L_q", CL_q, 0.0);
+  nh_.param<double>("C_L_delta_e", CL_de, 0.0);
+  nh_.param<double>("C_D_0", CD_0, 0.0);
+  nh_.param<double>("C_D_p", CD_p, 0.0);
+  nh_.param<double>("C_D_alpha", CD_alpha, 0.0);
+  nh_.param<double>("C_D_q", CD_q, 0.0);
+  nh_.param<double>("C_D_delta_e", CD_de, 0.0);
+  nh_.param<double>("C_m_0", Cm_0, 0.0);
+  nh_.param<double>("C_m_alpha", Cm_alpha, 0.0);
+  nh_.param<double>("C_m_q", Cm_q, 0.0);
+  nh_.param<double>("C_m_delta_e", Cm_de, 0.0);
 }
 }

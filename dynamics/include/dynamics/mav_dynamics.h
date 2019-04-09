@@ -67,6 +67,11 @@ private:
   double Jy, g_;
   bool wind_init{false};
 
+  double M_, rho, S_wing, c, alpha0, e;
+  double CL_0, CL_alpha, CL_q, CL_de;
+  double CD_p, CD_alpha, CD_q, CD_de, CD_0;
+  double Cm_0, Cm_alpha, Cm_q, Cm_de;
+
 };
 }
 
