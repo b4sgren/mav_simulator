@@ -291,5 +291,15 @@ void Dynamics::loadParams()
   nh_.param<double>("C_n_r", Cn_r, 0.0);
   nh_.param<double>("C_n_delta_a", Cn_da, 0.0);
   nh_.param<double>("C_n_delta_r", Cn_dr, 0.0);
+  nh_.param<double>("D_prop", D_prop, 0.0);
+  nh_.param<double>("C_Q0", C_Q0, 0.0);
+  nh_.param<double>("C_Q1", C_Q1, 0.0);
+  nh_.param<double>("C_Q2", C_Q2, 0.0);
+  nh_.param<double>("KQ", KQ, 0.0);
+  nh_.param<double>("R_motor", R_motor, 0.0);
+  nh_.param<double>("i0", i0, 0.0);
+  nh_.param<double>("C_T2", C_T2, 0.0);
+  nh_.param<double>("C_T1", C_T1, 0.0);
+  nh_.param<double>("C_T0", C_T0, 0.0);
 }
 }

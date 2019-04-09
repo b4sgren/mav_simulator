@@ -74,6 +74,8 @@ private:
   double CY_0, CY_beta, CY_p, CY_r, CY_da, CY_dr;
   double Cell_0, Cell_beta, Cell_p, Cell_r, Cell_da, Cell_dr;
   double Cn_0, Cn_beta, Cn_p, Cn_r, Cn_da, Cn_dr;
+  double D_prop, C_Q0, C_Q1, KQ, R_motor, C_Q2, i0;
+  double C_T2, C_T1, C_T0;
 
 };
 }
