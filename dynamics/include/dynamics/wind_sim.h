@@ -14,20 +14,24 @@ using namespace dyn
     ~WindSim();
 
   private:
+    void timerCallback(const ros::TimerEvent& event);
+    void stateCallback(const dynamics::StateConstPtr& msg);
+
     ros::NodeHandle nh_;
     ros::NodeHandle nh_p;
 
     ros::Subscriber state_sub;
     ros::Publisher wind_pub;
 
-    void timerCallback(const ros::TimerEvent& event);
-
-    Eigen::Matrix<double, 5, 3> B;
-    Eigen::Vector3d wind_ss;
-    Eigen::Vector3d wind_gust;
-    double Va_;
+    ros::Timer timer_;
+    Eigen::Matrix<double, 5, 5> A_;
+    Eigen::Matrix<double, 5, 3> B_;
+    Eigen::Matrix<double, 3, 5> C_;
+    Eigen::Vector3d wind_ss_;
+    Eigen::Vector3d wind_gust_;
+    double Va_, Ts_;
     //Dryden Gust model Params
-    double Lu, Lv, LW, sigma_u, sigma_v, sigma_w;
+    double Lu_, Lv_, Lw_, sigma_u_, sigma_v_, sigma_w_;
   };
 }
 
