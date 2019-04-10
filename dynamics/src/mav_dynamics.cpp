@@ -226,7 +226,9 @@ void Dynamics::calculateThrustForce(double dt)
 
   double a = (rho * pow(D_prop, 5))/pow(2*PI, 2) * C_Q0;
   double b2 = (rho * pow(D_prop, 4) * C_Q1 * Va_)/(2*PI) + (KQ*KQ)/R_motor;
-  double c2 = rho * pow(D_prop,3) * C_Q2 * Va_*Va_ - (KQ*V_in)/R_motor + KQ + i0;
+  double temp1 =  rho * D_prop*D_prop*D_prop * C_Q2 * Va_*Va_;
+  double temp2 = (KQ*V_in)/R_motor + KQ + i0;
+  double c2 = rho * D_prop*D_prop*D_prop * C_Q2 * Va_*Va_ - (KQ*V_in)/R_motor + KQ * i0;
 
   double Omega_op = (-b2 + sqrt(b2*b2 - 4*a*c2))/(2*a); //This is slightly off
   double J_op = (2 * PI * Va_)/(Omega_op * D_prop);
