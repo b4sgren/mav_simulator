@@ -1,5 +1,6 @@
 #include "dynamics/wind_sim.h"
 #include <cmath>
+#include <random>
 
 namespace dyn
 {
@@ -8,7 +9,8 @@ namespace dyn
     nh_.param<double>("Va0", Va_, 0.0);
 
     wind_ss_ << 3.0, 1.0, 0.0;
-    wind_gust_ << 0.0, 0.0, 0.0;
+    wind_gust_ << 0.0, 0.0, 0.0, 0.0, 0.0;
+    Ts_ = 0.02;
 
     //These should be in a parameter file
     Lu_ = 200.0;
@@ -35,7 +37,20 @@ namespace dyn
 
  void WindSim::timerCallback(const ros::TimerEvent& event)
  {
+   Eigen::Vector3d w = getRandomVector();
+   wind_gust_ = wind_gust_ + Ts_ * (A_ * wind_gust_ + B_ * w);
 
+   Eigen::Vector3d temp = C_ * wind_gust_;
+
+   dynamics::Wind wind_msg;
+   wind_msg.wn = wind_ss_(0);
+   wind_msg.we = wind_ss_(1);
+   wind_msg.wd = wind_ss_(2);
+   wind_msg.gust_n = temp(0);
+   wind_msg.gust_e = temp(1);
+   wind_msg.gust_d = temp(2);
+
+   wind_pub.publish(wind_msg);
  }
 
  void WindSim::stateCallback(const dynamics::StateConstPtr &msg)
@@ -54,6 +69,21 @@ namespace dyn
    C_(1,2) = sqrt(pow(Va_/Lv_, 3));
    C_(2,3) = sigma_w_ * sqrt(3 * Va_/Lv_);
    C_(2,4) = sqrt(pow(Va_/Lw_, 3));
-   int debug = 1;
+ }
+
+ double WindSim::generate_random_double()
+ {
+   std::random_device rd;
+   std::mt19937 gen(rd());
+   std::normal_distribution<> dis(0.0, 1.0);
+   return dis(gen);
+ }
+
+ Eigen::Vector3d WindSim::getRandomVector()
+ {
+   Eigen::Vector3d temp;
+   temp << generate_random_double(), generate_random_double(), generate_random_double();
+
+   return temp;
  }
 }
