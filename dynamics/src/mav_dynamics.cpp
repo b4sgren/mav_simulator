@@ -15,6 +15,7 @@ Dynamics::Dynamics() : nh_(ros::NodeHandle()), nh_p_("~")
   forces_ = Eigen::Matrix<double, 6, 1>::Zero();
   chi_ = 0.0;
   flight_path_ = 0.0;
+  windg_ = Eigen::Vector3d::Zero();
 
   //Need to set the state to trim for testing. For debugging only
   StateVec temp;
@@ -40,8 +41,7 @@ void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
   }
   Eigen::Vector3d gust;
   gust << msg->gust_n, msg->gust_e, msg->gust_d;
-  //update velocity data
-  updateVelocityData(gust);
+  windg_ = gust;
 }
 
 void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
@@ -55,7 +55,14 @@ void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
   StateVec k4 = derivatives(x_ + Ts_ * k3);
   x_ += Ts_/6.0 * (k1 + 2*k2 + 2*k3 + k4);
 
+  //normalize the quaternion
+  Eigen::Vector4d e = x_.segment<4>(ATT);
+  double norm_e = sqrt(e.transpose() * e);
+  e = e / norm_e;
+  x_.segment<4>(ATT) = e;
+
   //update and publish state
+  updateVelocityData(windg_);
   calcGammaAndChi();
   dynamics::State state;
   state.pn = x_(POS);
@@ -73,7 +80,7 @@ void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
   state.beta = beta_;
   state.wn = wind_(0);
   state.we = wind_(1);
-  state.Vg = x_.segment<3>(VEL).transpose() * x_.segment<3>(VEL);
+  state.Vg = sqrt(x_.segment<3>(VEL).transpose() * x_.segment<3>(VEL));
   state.gamma = flight_path_;
   state.chi = chi_;
 
@@ -139,7 +146,7 @@ void Dynamics::calcGammaAndChi()
   Eigen::Matrix3d R_v2b = tools::Quaternion2Rotation(x_.segment<4>(ATT));
   Eigen::Vector3d Vg = R_v2b * x_.segment<3>(VEL);
 
-  flight_path_ = asin(-Vg(0)/(tools::norm(Vg)));
+  flight_path_ = asin(-Vg(2)/(tools::norm(Vg)));
 
   Eigen::Vector3d Vgh = Vg * cos(flight_path_);
   Eigen::Vector3d e1{1, 0, 0};

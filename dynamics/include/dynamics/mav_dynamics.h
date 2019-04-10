@@ -57,7 +57,7 @@ private:
 
   double Ts_, Va_, alpha_, beta_, chi_, flight_path_;
   StateVec x_;
-  Eigen::Vector3d wind_;
+  Eigen::Vector3d wind_, windg_;
   Eigen::Matrix<double, 6, 1> forces_;
 
   const double PI{3.14159265};
