@@ -1,4 +1,5 @@
 #include "dynamics/mav_dynamics.h"
+#include <ros/ros.h>
 
 int main(int argc, char** argv)
 {
