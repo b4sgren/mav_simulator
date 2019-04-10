@@ -25,7 +25,7 @@ Dynamics::Dynamics() : nh_(ros::NodeHandle()), nh_p_("~")
 
   wind_sub = nh_.subscribe("wind", 1, &Dynamics::windCallback, this);
   inputs_sub = nh_.subscribe("surface_commands", 1, &Dynamics::inputCallback, this);
-  state_pub = nh_.advertise<dynamics::State>("state", 1);
+  state_pub = nh_.advertise<dynamics::State>("true_state", 1);
 }
 
 Dynamics::~Dynamics(){}
