@@ -1,7 +1,7 @@
-#include "dynamics/wind.h"
+#include "dynamics/wind_sim.h"
 #include <cmath>
 
-using namespace dyn
+namespace dyn
 {
   WindSim::WindSim(): nh_(ros::NodeHandle()), nh_p("~")
   {
@@ -23,12 +23,12 @@ using namespace dyn
     A_(4,3) = 1;
 
     B_ << 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0;
-    C_ = Eigen::Matrox<double, 3, 5>::Zero();
+    C_ = Eigen::Matrix<double, 3, 5>::Zero();
 
-    state_sub = nh_.subscribe("true_state", 1, &Dynamics::stateCallback, this);
+    state_sub = nh_.subscribe("true_state", 1, &WindSim::stateCallback, this);
     wind_pub = nh_.advertise<dynamics::Wind>("wind", 1);
 
-    timer_ = nh_.createTimer(ros::Duration(0.1), &timerCallback);
+    timer_ = nh_.createTimer(ros::Duration(0.1), &WindSim::timerCallback, this);
   }
 
   WindSim::~WindSim(){}
@@ -38,8 +38,22 @@ using namespace dyn
 
  }
 
- void stateCallback(const dynamics::StateConstPtr& msg)
+ void WindSim::stateCallback(const dynamics::StateConstPtr &msg)
  {
+   Va_ = msg->Va;
 
+   //recompute A and C matrices
+   A_(0,0) = -Va_/Lu_;
+   A_(1,1) = -2 * Va_/Lv_;
+   A_(1,2) = -(Va_*Va_)/(Lv_*Lv_);
+   A_(3,3) = -2 * Va_/Lw_;
+   A_(3,4) = -(Va_*Va_)/(Lw_*Lw_);
+
+   C_(0,0) = sigma_u_ * sqrt(2 * Va_/Lu_);
+   C_(1,1) = sigma_v_ * sqrt(3 * Va_/Lv_);
+   C_(1,2) = sqrt(pow(Va_/Lv_, 3));
+   C_(2,3) = sigma_w_ * sqrt(3 * Va_/Lv_);
+   C_(2,4) = sqrt(pow(Va_/Lw_, 3));
+   int debug = 1;
  }
 }

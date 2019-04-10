@@ -205,3 +205,6 @@ include_directories(
 
 add_executable(dynamics src/mav_dynamics.cpp src/mav_dynamics_node.cpp)
 target_link_libraries(dynamics ${catkin_LIBRARIES})
+
+add_executable(windsim src/wind_sim.cpp src/wind_node.cpp)
+target_link_libraries(windsim ${catkin_LIBRARIES})

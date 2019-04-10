@@ -3,9 +3,10 @@
 
 #include <ros/ros.h>
 #include <dynamics/Wind.h>
+#include <dynamics/State.h>
 #include <Eigen/Core>
 
-using namespace dyn
+namespace dyn
 {
   class WindSim
   {
@@ -14,8 +15,8 @@ using namespace dyn
     ~WindSim();
 
   private:
+    void stateCallback(const dynamics::StateConstPtr &msg);
     void timerCallback(const ros::TimerEvent& event);
-    void stateCallback(const dynamics::StateConstPtr& msg);
 
     ros::NodeHandle nh_;
     ros::NodeHandle nh_p;
