@@ -23,6 +23,8 @@ class MAV_Viewer:
         self.plot_initialize = False
         self.points, self.mesh_colors = self.getMAVPoints()
 
+        self.update(np.zeros((6,1)))
+
         self.app_lock = Lock()
 
     def getMAVPoints(self):
