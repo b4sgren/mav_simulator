@@ -1,5 +1,5 @@
 # State message for the MAV. Can be used for both true states and estimated
-
+Header header
 float32 pn   # north mav_position
 float32 pe   # east mav_position
 float32 h    # altitude
