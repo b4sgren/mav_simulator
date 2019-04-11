@@ -1,0 +1,20 @@
+# Control gains for all the loops
+
+roll_kp: 0.4743
+roll_kd: 0.1584
+
+course_kp: 1.25
+course_ki: 0.2
+
+yaw_damper_tau_r: 0.05
+yaw_damper_kp: 0.5
+
+pitch_kp: -4.5
+pitch_kd: -0.7
+
+altitude_kp: 0.05
+altitude_ki: 0.011
+altitude_zone: 2.0
+
+throttle_kp: 1.25
+throttle_ki: 0.35
