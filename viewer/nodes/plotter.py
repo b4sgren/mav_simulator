@@ -41,7 +41,7 @@ class PlotWrapper:
         # Subscribe to relevant ROS topics
         rospy.Subscriber('true_states', State, self.statesCallback)
         rospy.Subscriber('estimated_states', State, self.estimatesCallback)
-        rospy.Subscriber('surface_commands', State, self.cmdCallback)
+        rospy.Subscriber('commanded_states', State, self.cmdCallback)
 
         self.t0 = rospy.Time.now().to_sec()
 

@@ -1,0 +1,8 @@
+<launch>
+
+  <rosparam command="load" file="$(find dynamics)/param/plane_params.yaml" />
+
+  <node pkg="dynamics" type="dynamics" name="dynamics" output="screen"/>
+  <node pkg="viewer" type="plotter.py" name="state_plotter" output="screen"/>
+
+</launch>
