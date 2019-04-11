@@ -39,9 +39,11 @@ class PlotWrapper:
                   'theta_c','chi_c'])
 
         # Subscribe to relevant ROS topics
-        rospy.Subscriber('true_state', State, self.statesCallback)
-        rospy.Subscriber('estimated_state', State, self.estimatesCallback)
-        rospy.Subscriber('commanded_state', State, self.cmdCallback)
+        rospy.Subscriber('states/truth', State, self.statesCallback)
+        rospy.Subscriber('states/estimates', State, self.estimatesCallback)
+        rospy.Subscriber('states/commanded', State, self.cmdCallback)
+
+        self.t0 = rospy.Time.now().to_sec()
 
         # Update the plots
         rate = rospy.Rate(update_freq)
@@ -112,7 +114,7 @@ class PlotWrapper:
                            msg.phi, msg.theta, msg.chi, msg.p, msg.q, msg.r,
                            msg.Vg, msg.wn, msg.we, msg.psi,msg.bx,msg.by,msg.bz]
 
-        self.plotter.add_vector_measurement('true_state', true_state_list, t)
+        self.plotter.add_vector_measurement('true_state',true_state_list,t-self.t0)
 
     def estimatesCallback(self, msg):
         t = msg.header.stamp.to_sec()
@@ -121,14 +123,14 @@ class PlotWrapper:
                            msg.phi, msg.theta, msg.chi, msg.p, msg.q, msg.r,
                            msg.Vg, msg.wn, msg.we, msg.psi,msg.bx,msg.by,msg.bz]
 
-        self.plotter.add_vector_measurement('estimated_state',est_state_list,t)
+        self.plotter.add_vector_measurement('estimated_state',est_state_list,t-self.t0)
 
     def cmdCallback(self, msg):
         t = msg.header.stamp.to_sec()
 
         cmd_state_list = [msg.h, msg.Va, msg.phi, msg.theta, msg.chi]
 
-        self.plotter.add_vector_measurement('commands', cmd_state_list, t)
+        self.plotter.add_vector_measurement('commands', cmd_state_list, t-self.t0)
 
 
 if __name__ == '__main__':

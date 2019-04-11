@@ -24,6 +24,9 @@ Dynamics::Dynamics() : nh_(ros::NodeHandle()), nh_p_("~")
   alpha_ = 0.05001105232205032;
   beta_ = 0.0;
 
+  t0 = ros::Time::now().toSec();
+  tprev = t0;
+
   wind_sub = nh_.subscribe("wind", 1, &Dynamics::windCallback, this);
   inputs_sub = nh_.subscribe("surface_commands", 1, &Dynamics::inputCallback, this);
   state_pub = nh_.advertise<dynamics::State>("true_state", 1);
@@ -46,6 +49,11 @@ void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
 
 void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
 {
+  //get time
+  double t = ros::Time::now().toSec();
+  Ts_ = t - tprev;
+  tprev = t;
+
   //calc forces and moments
   calculateForcesAndMoments(msg); //Comes out wrong
   //4th order Runge-Kutta
@@ -83,6 +91,7 @@ void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
   state.Vg = sqrt(x_.segment<3>(VEL).transpose() * x_.segment<3>(VEL));
   state.gamma = flight_path_;
   state.chi = chi_;
+  state.header.stamp = ros::Time::now();
 
   state_pub.publish(state);
 }
@@ -306,7 +315,7 @@ void Dynamics::loadParams()
   nh_.param<double>("b", b, 0.0);
   nh_.param<double>("C_Y_0", CY_0, 0.0);
   nh_.param<double>("C_Y_beta", CY_beta, 0.0);
-  nh_.param<double>("C_Y_p", CY_p, 0.0);
+  nh_.param<to_sec()double>("C_Y_p", CY_p, 0.0);
   nh_.param<double>("C_Y_r", CY_r, 0.0);
   nh_.param<double>("C_Y_delta_a", CY_da, 0.0);
   nh_.param<double>("C_Y_delta_r", CY_dr, 0.0);

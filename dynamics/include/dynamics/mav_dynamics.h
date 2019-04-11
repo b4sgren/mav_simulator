@@ -61,6 +61,8 @@ private:
   Eigen::Matrix<double, 6, 1> forces_;
 
   const double PI{3.14159265};
+  double t0;
+  double tprev;
 
   //Parameters from the yaml file
   double mass, gamma, gamma1, gamma2, gamma3, gamma4, gamma5, gamma6, gamma7, gamma8;
