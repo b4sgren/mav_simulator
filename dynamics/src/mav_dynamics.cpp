@@ -91,6 +91,9 @@ void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
   state.Vg = sqrt(x_.segment<3>(VEL).transpose() * x_.segment<3>(VEL));
   state.gamma = flight_path_;
   state.chi = chi_;
+  state.bx = 0.0;
+  state.by = 0.0;
+  state.bz = 0.0;
   state.header.stamp = ros::Time::now();
 
   state_pub.publish(state);
