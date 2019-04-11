@@ -200,5 +200,5 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(autopilot src/autopilot.cpp src/autopilot_node.cpp pid_controller.cpp)
+add_executable(autopilot src/autopilot.cpp src/autopilot_node.cpp src/pid_controller.cpp)
 target_link_libraries(autopilot ${catkin_LIBRARIES})
