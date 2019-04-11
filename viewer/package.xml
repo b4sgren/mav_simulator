@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>plotter</name>
+  <name>viewer</name>
   <version>0.0.0</version>
   <description>Python package for real-time state plotting</description>
 

@@ -315,7 +315,7 @@ void Dynamics::loadParams()
   nh_.param<double>("b", b, 0.0);
   nh_.param<double>("C_Y_0", CY_0, 0.0);
   nh_.param<double>("C_Y_beta", CY_beta, 0.0);
-  nh_.param<to_sec()double>("C_Y_p", CY_p, 0.0);
+  nh_.param<double>("C_Y_p", CY_p, 0.0);
   nh_.param<double>("C_Y_r", CY_r, 0.0);
   nh_.param<double>("C_Y_delta_a", CY_da, 0.0);
   nh_.param<double>("C_Y_delta_r", CY_dr, 0.0);
