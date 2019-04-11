@@ -39,9 +39,9 @@ class PlotWrapper:
                   'theta_c','chi_c'])
 
         # Subscribe to relevant ROS topics
-        rospy.Subscriber('states/truth', State, self.statesCallback)
-        rospy.Subscriber('states/estimates', State, self.estimatesCallback)
-        rospy.Subscriber('states/commanded', State, self.cmdCallback)
+        rospy.Subscriber('true_states', State, self.statesCallback)
+        rospy.Subscriber('estimated_states', State, self.estimatesCallback)
+        rospy.Subscriber('surface_commands', State, self.cmdCallback)
 
         self.t0 = rospy.Time.now().to_sec()
 

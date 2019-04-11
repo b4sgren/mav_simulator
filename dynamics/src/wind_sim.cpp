@@ -49,6 +49,7 @@ namespace dyn
    wind_msg.gust_n = temp(0);
    wind_msg.gust_e = temp(1);
    wind_msg.gust_d = temp(2);
+   wind_msg.header.stamp = ros::Time::now();
 
    wind_pub.publish(wind_msg);
  }
