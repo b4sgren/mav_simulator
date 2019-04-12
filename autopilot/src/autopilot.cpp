@@ -15,7 +15,12 @@ namespace control
     nh_p.param<double>("yaw_damper_kp", kp_yaw, 0.0);
     roll_from_aileron = PID_Controller(roll_kp, roll_kd, 0.0, radians(45), -radians(45));
     course_from_roll = PID_Controller(course_kp, 0, course_ki, radians(30), -radians(30));
-    //TODO figure out yaw damper
+    //Yaw damper: Note that these values are specific to the values given in the control_params.yaml file
+    A_ = 0.6;
+    B_ = 0.02;
+    C_ = -9.5;
+    D_ = 0.5;
+    x_ = 0.0;
 
     double pitch_kp, pitch_kd, alt_kp, alt_ki, throttle_kp, throttle_ki;
     nh_p.param<double>("pitch_kp", pitch_kp, 0.0);
@@ -52,7 +57,8 @@ namespace control
     double phi_cmd = course_from_roll.update(chi_ref_, msg->chi, dt, true) + phi_ff_ref_;;
     double da = roll_from_aileron.updateWithRate(phi_cmd, msg->phi, msg->p, dt);
     //do yaw damper here
-    double dr = 0.0;
+    x_ = A_ * x_ + B_ * msg->r;
+    double dr = C_ * x_ + D_ * msg->r;
 
     //longitudinal
     double theta_cmd = altitude_from_pitch.update(h_ref_, msg->h, dt, false);

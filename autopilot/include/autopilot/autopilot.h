@@ -34,7 +34,8 @@ namespace control
     double tprev_;
     PID_Controller roll_from_aileron;
     PID_Controller course_from_roll;
-    // TODO Figure out Yaw damper
+    //Yaw damper. See tools in my python MAVAutopilot repo
+    double A_, B_, C_, D_, x_;
 
     //Longitudinal control loops
     PID_Controller pitch_from_elevator;
