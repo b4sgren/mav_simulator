@@ -12,9 +12,10 @@ namespace control
     PID_Controller(double kp, double kd, double ki, double sat_l, double sat_h);
     ~PID_Controller();
 
-  private:
     double update(double yref, double y, double dt, bool wrap_flag);
     double updateWithRate(double yref, double y, double ydot, double dt);
+    
+  private:
     void integrateError(double error, double dt);
     void differentiate(double y, double dt);
     void antiWindUp(double u_unsat, double u, double dt);

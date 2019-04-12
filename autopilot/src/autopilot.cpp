@@ -37,13 +37,44 @@ namespace control
     commanded_state_pub = nh_.advertise<dynamics::State>("commanded_state", 1);
     commands_sub = nh_.subscribe("commands", 1, &Autopilot::commandsCallback, this); // TODO Add a commanded message
     est_state_sub = nh_.subscribe("estimated_states", 1, &Autopilot::estStateCallback, this);
+
+    tprev_ = ros::Time::now().toSec();
   }
 
   Autopilot::~Autopilot(){}
 
   void Autopilot::estStateCallback(const dynamics::StateConstPtr &msg)
   {
+    double t = ros::Time::now().toSec();
+    double dt = t - tprev_;
+    tprev_ = t;
 
+    double phi_cmd = course_from_roll.update(chi_ref_, msg->chi, dt, true) + phi_ff_ref_;;
+    double da = roll_from_aileron.updateWithRate(phi_cmd, msg->phi, msg->p, dt);
+    //do yaw damper here
+    double dr = 0.0;
+
+    //longitudinal
+    double theta_cmd = altitude_from_pitch.update(h_ref_, msg->h, dt, false);
+    double de = pitch_from_elevator.updateWithRate(theta_cmd, msg->theta, msg->q, dt);
+    double delt = airspeed_from_throttle.update(Va_ref_, msg->Va, dt, false);
+
+    dynamics::ControlInputs deltas;
+    deltas.header.stamp = ros::Time::now();
+    deltas.da = da;
+    deltas.dt = delt;
+    deltas.dr = dr;
+    deltas.de = de;
+    delta_pub.publish(deltas);
+
+    dynamics::State cmd_state;
+    cmd_state.header.stamp = ros::Time::now();
+    cmd_state.h = h_ref_;
+    cmd_state.Va = Va_ref_;
+    cmd_state.phi = phi_cmd;
+    cmd_state.theta = theta_cmd;
+    cmd_state.chi = chi_ref_;
+    commanded_state_pub.publish(cmd_state);
   }
 
   void Autopilot::commandsCallback(const autopilot::CommandsConstPtr &msg)

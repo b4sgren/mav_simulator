@@ -31,6 +31,7 @@ namespace control
 
     //Lateral Control loops
     double chi_ref_, Va_ref_, h_ref_, phi_ff_ref_;
+    double tprev_;
     PID_Controller roll_from_aileron;
     PID_Controller course_from_roll;
     // TODO Figure out Yaw damper
