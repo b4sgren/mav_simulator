@@ -4,6 +4,7 @@
 #include <ros/ros.h>
 #include <Eigen/Core>
 #include "autopilot/pid_controller.h"
+#include "dynamics/State.h"
 
 namespace control
 {
@@ -16,6 +17,8 @@ namespace control
   private:
     void estStateCallback(const dynamics::StateConstPtr& msg);
     // void commandsCallback(const autopilot::CommandsConstPtr& msg);
+
+    double radians(double deg);
 
     ros::NodeHandle nh_;
     ros::NodeHandle nh_p;

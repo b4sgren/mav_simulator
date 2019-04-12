@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  dynamics
 )
 find_package(Eigen3 REQUIRED)
 
@@ -106,7 +107,7 @@ find_package(Eigen3 REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES autopilot
-#  CATKIN_DEPENDS roscpp rospy std_msgs
+   CATKIN_DEPENDS roscpp rospy std_msgs dynamics
 #  DEPENDS system_lib
 )
 
@@ -202,3 +203,4 @@ include_directories(
 
 add_executable(autopilot src/autopilot.cpp src/autopilot_node.cpp src/pid_controller.cpp)
 target_link_libraries(autopilot ${catkin_LIBRARIES})
+add_dependencies(autopilot ${catkin_EXPORTED_TARGETS})

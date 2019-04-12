@@ -8,7 +8,8 @@ namespace control
   class PID_Controller
   {
   public:
-    PID_Controller(double kp, double kd, double ki, double sigma, double sat_l, double sat_h);
+    PID_Controller();
+    PID_Controller(double kp, double kd, double ki, double sat_l, double sat_h);
     ~PID_Controller();
 
   private:

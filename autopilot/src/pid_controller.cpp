@@ -2,12 +2,14 @@
 
 namespace control
 {
-  PID_Controller::PID_Controller(double kp, double kd, double ki, double sigma, double sat_l, double sat_h)
+  PID_Controller::PID_Controller(){}
+  
+  PID_Controller::PID_Controller(double kp, double kd, double ki, double sat_l, double sat_h)
   {
     kp_ = kp;
     kd_ = kd;
     ki_ = ki;
-    sigma_= sigma;
+    sigma_= 0.05;
     limit_h_ = sat_h;
     limit_l_ = sat_l;
     integrator_ = 0.0;
