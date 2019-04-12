@@ -198,3 +198,7 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+add_executable(ekf src/ekf.cpp src/ekf_node.cpp)
+target_link_libraries(ekf ${catkin_LIBRARIES})
+#add_dependencies(ekf ${catkin_EXPORTED_TARGETS})
