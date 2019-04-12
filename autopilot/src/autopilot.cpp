@@ -48,7 +48,10 @@ namespace control
 
   void Autopilot::commandsCallback(const autopilot::CommandsConstPtr &msg)
   {
-
+    chi_ref_ = msg->chi_cmd;
+    Va_ref_= msg-> Va_cmd;
+    h_ref_ = msg->h_cmd;
+    phi_ff_ref_ = msg->phi_ff;
   }
 
   double Autopilot::radians(double deg)
