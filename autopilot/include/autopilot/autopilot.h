@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 #include "autopilot/pid_controller.h"
 #include "dynamics/State.h"
+#include "autopilot/Commands.h"
 
 namespace control
 {
@@ -16,7 +17,7 @@ namespace control
 
   private:
     void estStateCallback(const dynamics::StateConstPtr& msg);
-    // void commandsCallback(const autopilot::CommandsConstPtr& msg);
+    void commandsCallback(const autopilot::CommandsConstPtr& msg);
 
     double radians(double deg);
 
@@ -29,6 +30,7 @@ namespace control
     ros::Subscriber est_state_sub;
 
     //Lateral Control loops
+    double chi_ref_, Va_ref_, h_ref_, phi_ff_ref_;
     PID_Controller roll_from_aileron;
     PID_Controller course_from_roll;
     // TODO Figure out Yaw damper

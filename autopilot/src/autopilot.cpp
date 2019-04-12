@@ -28,15 +28,25 @@ namespace control
     altitude_from_pitch = PID_Controller(alt_kp, 0, alt_ki, radians(30), -radians(30));
     airspeed_from_throttle = PID_Controller(throttle_kp, 0, throttle_ki, 1.0, 0.0);
 
+    chi_ref_ = 0.0;
+    nh_.param<double>("Va0", Va_ref_, 0.0);
+    nh_.param<double>("h0", h_ref_, 0.0);
+    phi_ff_ref_ = 0.0;
+
     delta_pub = nh_.advertise<dynamics::ControlInputs>("surface_commands", 1);
     commanded_state_pub = nh_.advertise<dynamics::State>("commanded_state", 1);
-    // commands_sub = nh_.subscribe("commands", 1, &Autopilot::commandsCallback, this); // TODO Add a commanded message
+    commands_sub = nh_.subscribe("commands", 1, &Autopilot::commandsCallback, this); // TODO Add a commanded message
     est_state_sub = nh_.subscribe("estimated_states", 1, &Autopilot::estStateCallback, this);
   }
 
   Autopilot::~Autopilot(){}
 
-  void Autopilot::estStateCallback(const dynamics::StateConstPtr& msg)
+  void Autopilot::estStateCallback(const dynamics::StateConstPtr &msg)
+  {
+
+  }
+
+  void Autopilot::commandsCallback(const autopilot::CommandsConstPtr &msg)
   {
 
   }
