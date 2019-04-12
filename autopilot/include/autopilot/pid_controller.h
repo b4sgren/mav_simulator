@@ -22,7 +22,6 @@ namespace control
 
     double kp_, kd_, ki_, sigma_, limit_h_, limit_l_;
     double integrator_, eprev_, ydot_, yprev_;
-    const double PI{3.14159625};
 
   };
 }

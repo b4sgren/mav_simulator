@@ -3,7 +3,7 @@
 namespace control
 {
   PID_Controller::PID_Controller(){}
-  
+
   PID_Controller::PID_Controller(double kp, double kd, double ki, double sat_l, double sat_h)
   {
     kp_ = kp;
@@ -25,6 +25,7 @@ namespace control
     double error{yref - y};
     if(wrap_flag)
     {
+      const double PI{3.14159625};
       while(error > PI)
         error -= 2 * PI;
       while(error <= -PI)
