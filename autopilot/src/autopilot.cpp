@@ -50,10 +50,9 @@ namespace control
 
   void Autopilot::estStateCallback(const dynamics::StateConstPtr &msg)
   {
-//    double t = ros::Time::now().toSec();
-//    double dt = t - tprev_;
-//    tprev_ = t;
-    double dt = 0.02;
+    double t = ros::Time::now().toSec();
+    double dt = t - tprev_;
+    tprev_ = t;
 
     double phi_cmd = course_from_roll.update(chi_ref_, msg->chi, dt, true) + phi_ff_ref_;;
     double da = roll_from_aileron.updateWithRate(phi_cmd, msg->phi, msg->p, dt);
