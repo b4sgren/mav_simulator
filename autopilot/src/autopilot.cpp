@@ -50,9 +50,10 @@ namespace control
 
   void Autopilot::estStateCallback(const dynamics::StateConstPtr &msg)
   {
-    double t = ros::Time::now().toSec();
-    double dt = t - tprev_;
-    tprev_ = t;
+//    double t = ros::Time::now().toSec();
+//    double dt = t - tprev_;
+//    tprev_ = t;
+    double dt = 0.02;
 
     double phi_cmd = course_from_roll.update(chi_ref_, msg->chi, dt, true) + phi_ff_ref_;;
     double da = roll_from_aileron.updateWithRate(phi_cmd, msg->phi, msg->p, dt);
@@ -94,7 +95,7 @@ namespace control
   double Autopilot::radians(double deg)
   {
     double pi{3.14159625};
-    return deg * 180.0/pi;
+    return deg * pi/180.0;
   }
 
 }
