@@ -34,5 +34,7 @@ namespace est
     estState.bx = 0.0;
     estState.by = 0.0;
     estState.bz = 0.0;
+
+    estState_pub.publish(estState);
   }
 }

@@ -38,6 +38,15 @@ class PlotWrapper:
         self.plotter.define_input_vector('commands',['h_c','Va_c','phi_c',
                   'theta_c','chi_c'])
 
+        true_state_list = [0, 0, 0, 0, 0, 0,
+                           0, 0, 0, 0, 0, 0,
+                           0, 0, 0, 0, 0, 0, 0]
+        cmd_state_list = [0, 0, 0, 0, 0]
+
+        self.plotter.add_vector_measurement('true_state',true_state_list, 0)
+        self.plotter.add_vector_measurement('estimated_state',true_state_list, 0)
+        self.plotter.add_vector_measurement('commands', cmd_state_list, 0)
+
         # Subscribe to relevant ROS topics
         rospy.Subscriber('true_states', State, self.statesCallback)
         rospy.Subscriber('estimated_states', State, self.estimatesCallback)
