@@ -41,6 +41,7 @@ namespace control
     PID_Controller pitch_from_elevator;
     PID_Controller altitude_from_pitch;
     PID_Controller airspeed_from_throttle;
+    bool starting;
   };
 }
 

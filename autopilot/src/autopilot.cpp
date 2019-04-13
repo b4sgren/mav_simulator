@@ -5,6 +5,7 @@ namespace control
 {
   Autopilot::Autopilot():  nh_(ros::NodeHandle()), nh_p("~")
   {
+     starting = true;
     //Write a parameter file
     double roll_kp, roll_kd, course_kp, course_ki, kp_yaw, tau_yaw;
     nh_.param<double>("roll_kp", roll_kp, 0.0);
@@ -90,6 +91,18 @@ namespace control
     Va_ref_= msg-> Va_cmd;
     h_ref_ = msg->h_cmd;
     phi_ff_ref_ = msg->phi_ff;
+
+    dynamics::ControlInputs deltas;
+    deltas.header.stamp = ros::Time::now();
+    deltas.da = 1.80184679e-3;
+    deltas.dt = .676753313;
+    deltas.dr = -320369153e-4;
+    deltas.de = -.124777967;
+    if(starting)
+    {
+        delta_pub.publish(deltas);
+        starting = false;
+    }
   }
 
   double Autopilot::radians(double deg)
