@@ -27,7 +27,7 @@ namespace dyn
     B_ << 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0;
     C_ = Eigen::Matrix<double, 3, 5>::Zero();
 
-    state_sub = nh_.subscribe("true_state", 1, &WindSim::stateCallback, this);
+    state_sub = nh_.subscribe("true_states", 1, &WindSim::stateCallback, this);
     wind_pub = nh_.advertise<dynamics::Wind>("wind", 1);
 
     timer_ = nh_.createTimer(ros::Duration(0.1), &WindSim::timerCallback, this);

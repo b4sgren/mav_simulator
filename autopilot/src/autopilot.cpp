@@ -35,9 +35,8 @@ namespace control
     airspeed_from_throttle = PID_Controller(throttle_kp, 0, throttle_ki, 1.0, 0.0);
 
     chi_ref_ = 0.0;
-    nh_.param<double>("Va0", Va_ref_, 0.0);
-    nh_.param<double>("pd0", h_ref_, 0.0);
-    h_ref_ = -h_ref_;
+    Va_ref_ = 25.0;
+    h_ref_ = 100.0;
     phi_ff_ref_ = 0.0;
 
     delta_pub = nh_.advertise<dynamics::ControlInputs>("surface_commands", 1);
@@ -55,6 +54,7 @@ namespace control
     double t = ros::Time::now().toSec();
     double dt = t - tprev_;
     tprev_ = t;
+    dt = 0.02
 
     double phi_cmd = course_from_roll.update(chi_ref_, msg->chi, dt, true) + phi_ff_ref_;;
     double da = roll_from_aileron.updateWithRate(phi_cmd, msg->phi, msg->p, dt);

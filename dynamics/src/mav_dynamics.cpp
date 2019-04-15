@@ -53,6 +53,7 @@ void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
   double t = ros::Time::now().toSec();
   Ts_ = t - tprev;
   tprev = t;
+  Ts_ = 0.02;
 
   //calc forces and moments
   calculateForcesAndMoments(msg); //Comes out wrong
