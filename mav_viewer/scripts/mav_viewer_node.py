@@ -24,11 +24,12 @@ if __name__ == '__main__':
     This is the visualization of the simulator
     """
 
+    #set this so that mav_viewer is main window. Create separate threads inside of it to run other ros nodes.
     print "Initializing node"
-    rospy.init_node("simulator", log_level=rospy.DEBUG) #use when running ros
+    rospy.init_node("simulator", log_level=rospy.DEBUG) #initialize at end of constructor
 
     #Initialize class here:
     viewer = Viewer()
-    viewer.run() # will stay commented out while building rest of class
+    viewer.run() # try running this in a separate thread
 
 print "Done"
