@@ -43,9 +43,9 @@ namespace dyn
    Eigen::Vector3d temp = C_ * wind_gust_;
 
    dynamics::Wind wind_msg;
-   wind_msg.wn = wind_ss_(0);
-   wind_msg.we = wind_ss_(1);
-   wind_msg.wd = wind_ss_(2);
+   wind_msg.wn = 0.0; //wind_ss_(0);
+   wind_msg.we = 0.0; //wind_ss_(1);
+   wind_msg.wd = 0.0; //wind_ss_(2);
    wind_msg.gust_n = 0.0; //temp(0);
    wind_msg.gust_e = 0.0; //temp(1);
    wind_msg.gust_d = 0.0; //temp(2);

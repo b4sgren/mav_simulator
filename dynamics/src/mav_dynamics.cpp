@@ -7,7 +7,6 @@ namespace dyn
 Dynamics::Dynamics() : nh_(ros::NodeHandle()), nh_p_("~")
 {
   Ts_ = 0.02;
-  Va_ = 0.0;
   alpha_ = 0.0;
   beta_ = 0.0;
 
@@ -15,14 +14,10 @@ Dynamics::Dynamics() : nh_(ros::NodeHandle()), nh_p_("~")
   forces_ = Eigen::Matrix<double, 6, 1>::Zero();
   chi_ = 0.0;
   flight_path_ = 0.0;
-  windg_ = Eigen::Vector3d::Zero();
 
-  //Need to set the state to trim for testing. For debugging only
-  StateVec temp;
-  temp << 0, 0, -100, 24.9687427, 0, 1.24975519, .999687380, 0, .0250028452, 0, 0, 0, 0;
-  x_ = temp;
-  alpha_ = 0.05001105232205032;
-  beta_ = 0.0;
+  windg_ = Eigen::Vector3d::Zero();
+  wind_ = Eigen::Vector3d::Zero();
+  wind_init = false;
 
   t0 = ros::Time::now().toSec();
   tprev = t0;
@@ -42,9 +37,10 @@ void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
     wind_ << msg->wn, msg->we, msg->wd;
     wind_init = true;
   }
-  Eigen::Vector3d gust;
-  gust << msg->gust_n, msg->gust_e, msg->gust_d;
-  windg_ = gust;
+  windg_(0) = msg->gust_n;
+  windg_(1) = msg->gust_e;
+  windg_(2) = msg->gust_d;
+  updateVelocityData(windg_);
 }
 
 void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
@@ -53,10 +49,11 @@ void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
   double t = ros::Time::now().toSec();
   Ts_ = t - tprev;
   tprev = t;
-  Ts_ = 0.02;
+//  Ts_ = 0.02;
 
   //calc forces and moments
-  calculateForcesAndMoments(msg); //Comes out wrong
+  calculateForcesAndMoments(msg);
+
   //4th order Runge-Kutta
   StateVec k1 = derivatives(x_);
   StateVec k2 = derivatives(x_ + Ts_/2.0 * k1);
@@ -114,18 +111,19 @@ StateVec Dynamics::derivatives(const StateVec& x)
   StateVec xdot;
   xdot.segment<3>(POS) = R_b2v * v;
 
-  double var1 = w(2) * v(1) - w(1) * v(2);
-  double var2 = w(0) * v(2) - w(2) * v(0);
-  double var3 = w(2) * v(0) - w(0) * v(2);
+  double wp{w(0)}, wq{w(1)}, wr{w(2)}, vu{v(0)}, vv{v(1)}, vw{v(2)};
+  double var1 = wr*vv - wq*vw;
+  double var2 = wp*vw - wr*vu;
+  double var3 = wq*vu - wp*vv;
   Eigen::Vector3d temp;
   temp << var1, var2, var3;
   xdot.segment<3>(VEL) = temp + 1.0/mass * f;
 
   xdot.segment<4>(ATT) = 0.5 * tools::skew(w) * e;
 
-  xdot(OMEGA) = gamma1 * w(0) * w(1) - gamma2*w(1)*w(2) + gamma3 * moments(0) + gamma4*moments(2);
-  xdot(OMEGA+1) = gamma5*w(0)*w(2) - gamma6*(w(0)*w(0) - w(2)*w(2)) + Jy*moments(1);
-  xdot(OMEGA+2) = gamma7*w(0)*w(1) - gamma1*w(1)*w(2) + gamma4*moments(0) + gamma8*moments(2);
+  xdot(OMEGA) = gamma1 * wp*wq - gamma2*wq*wr + gamma3 * moments(0) + gamma4*moments(2);
+  xdot(OMEGA+1) = gamma5*wp*wr - gamma6*(wp*wp - wr*wr) + Jy*moments(1);
+  xdot(OMEGA+2) = gamma7*wp*wq - gamma1*wq*wr + gamma4*moments(0) + gamma8*moments(2);
 
   return xdot;
 }
@@ -178,8 +176,8 @@ void Dynamics::calculateForcesAndMoments(const dynamics::ControlInputsConstPtr &
   forces_.segment<3>(F) = R_v2b * weight;
 
   //update other forces
-//  double de{msg->de}, dt{msg->dt}, da{msg->da}, dr{msg->dr};
-  double de{-1.24778073e-1}, dt{6.76752115e-1}, da{1.83617600e-3}, dr{-3.0262668e-4}; //This is just for verification that this all works
+  double de{msg->de}, dt{msg->dt}, da{msg->da}, dr{msg->dr};
+//  double de{-1.24778073e-1}, dt{6.76752115e-1}, da{1.83617600e-3}, dr{-3.0262668e-4}; //This is just for verification that this all works
   calculateLongitudinalForces(de);
   calculateLateralForces(da, dr);
   calculateThrustForce(dt);
@@ -246,15 +244,13 @@ void Dynamics::calculateThrustForce(double dt)
 
   double a = (rho * pow(D_prop, 5))/pow(2*PI, 2) * C_Q0;
   double b2 = (rho * pow(D_prop, 4) * C_Q1 * Va_)/(2*PI) + (KQ*KQ)/R_motor;
-  double temp1 =  rho * D_prop*D_prop*D_prop * C_Q2 * Va_*Va_;
-  double temp2 = (KQ*V_in)/R_motor + KQ + i0;
   double c2 = rho * D_prop*D_prop*D_prop * C_Q2 * Va_*Va_ - (KQ*V_in)/R_motor + KQ * i0;
 
-  double Omega_op = (-b2 + sqrt(b2*b2 - 4*a*c2))/(2*a); //This is slightly off
+  double Omega_op = (-b2 + sqrt(b2*b2 - 4*a*c2))/(2*a);
   double J_op = (2 * PI * Va_)/(Omega_op * D_prop);
 
   double CT = C_T2 * (J_op*J_op) + C_T1*J_op + C_T0;
-  double CQ = C_Q2*(J_op*J_op) + C_Q2*J_op + C_Q0;
+//  double CQ = C_Q2*(J_op*J_op) + C_Q2*J_op + C_Q0;
 
   double l = KQ * (1.0/R_motor * (V_in - KQ*Omega_op) - i0);
   double f = CT * (rho * (Omega_op * Omega_op) * pow(D_prop, 4))/(4*PI*PI);
