@@ -34,9 +34,9 @@ namespace control
     altitude_from_pitch = PID_Controller(alt_kp, 0, alt_ki, radians(30), -radians(30));
     airspeed_from_throttle = PID_Controller(throttle_kp, 0, throttle_ki, 1.0, 0.0);
 
-    chi_ref_ = 0.0;
+    chi_ref_ = 3.14159265/4.0;
     Va_ref_ = 25.0;
-    h_ref_ = 100.0;
+    h_ref_ = 110.0;
     phi_ff_ref_ = 0.0;
 
     delta_pub = nh_.advertise<dynamics::ControlInputs>("surface_commands", 1);
@@ -54,7 +54,7 @@ namespace control
     double t = ros::Time::now().toSec();
     double dt = t - tprev_;
     tprev_ = t;
-    dt = 0.02;
+//    dt = 0.02;
 
     double phi_cmd = course_from_roll.update(chi_ref_, msg->chi, dt, true) + phi_ff_ref_;
     double da = roll_from_aileron.updateWithRate(phi_cmd, msg->phi, msg->p, dt);
@@ -92,6 +92,13 @@ namespace control
     h_ref_ = msg->h_cmd;
     phi_ff_ref_ = msg->phi_ff;
 
+    //For debugging purposes
+//      chi_ref_ = 0.0;
+//      Va_ref_= 25.0;
+//      h_ref_ = 100.0;
+//      phi_ff_ref_ = 0.0;
+
+    //For first time to get things kicked off. Trim conditions
     dynamics::ControlInputs deltas;
     deltas.header.stamp = ros::Time::now();
     deltas.da = 1.80184679e-3;
