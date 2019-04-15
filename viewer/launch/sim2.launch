@@ -1,0 +1,11 @@
+<launch>
+  <rosparam command="load" file="$(find dynamics)/param/plane_params.yaml" />
+  <rosparam command="load" file="$(find autopilot)/param/control_params.yaml" />
+
+  <node pkg="dynamics" type="dynamics" name="dynamics" output="screen" />
+  <node pkg="viewer" type="plotter.py" name="state_plotter" output="screen" />
+  <node pkg="estimator" type="ekf" name="ekf" output="screen" />
+  <node pkg="autopilot" type="autopilot" name="autopilot" output="screen" />
+  <node pkg="dynamics" type="windsim" name="wind" output="screen" />
+
+</launch>

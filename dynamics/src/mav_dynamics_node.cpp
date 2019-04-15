@@ -1,4 +1,5 @@
 #include "dynamics/mav_dynamics.h"
+#include <ros/ros.h>
 
 int main(int argc, char** argv)
 {
@@ -6,7 +7,6 @@ int main(int argc, char** argv)
   ros::NodeHandle nh;
 
   dyn::Dynamics mav;
-
-  ros::spin();
+  mav.run();
   return 0;
 }

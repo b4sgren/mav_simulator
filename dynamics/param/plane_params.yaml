@@ -1,0 +1,121 @@
+### plane parameters found in the appendix of Beard and McLains Books
+
+#Initial State of the aircraft
+pn0: 0.0
+pe0: 0.0
+pd0: -100.0
+u0: 25.0
+v0: 0.0
+w0: 0.0
+phi0: 0.0
+theta0: 0.0
+psi0: 0.0
+p0: 0.0
+q0: 0.0
+r0: 0.0
+Va0: 25.0
+e0: 1.0 #find out how to leave in matrix if possible
+e1: 0.0
+e2: 0.0
+e3: 0.0
+
+# Physical parameters of the plane
+mass: 11.0 #kg
+Jx: 0.8244 #kgm^2
+Jy: 1.135
+Jz: 1.759
+Jxz: 0.1204
+S_wing: 0.55
+b: 2.8956
+c: 0.18994
+S_prop: 0.2027
+rho: 1.2682
+e: 0.9
+AR: 15.24454429
+gravity: 9.8
+
+# Logitudinal Coefficients
+C_L_0: 0.23
+C_D_0: 0.043
+C_m_0: 0.0135
+C_L_alpha: 5.61
+C_D_alpha: 0.03
+C_m_alpha: -2.74
+C_L_q: 7.95
+C_D_q: 0.0
+C_m_q: -38.21
+C_L_delta_e: 0.13
+C_D_delta_e: 0.0135
+C_m_delta_e: -0.99
+M: 50.0
+alpha0: 0.47
+epsilon: 0.16
+C_D_p: 0.0
+
+# Lateral Coefficients
+C_Y_0: 0.0
+C_ell_0: 0.0
+C_n_0: 0.0
+C_Y_beta: -0.98
+C_ell_beta: -0.13
+C_n_beta: 0.073
+C_Y_p: 0.0
+C_ell_p: -0.51
+C_n_p: 0.069
+C_Y_r: 0.0
+C_ell_r: 0.25
+C_n_r: -0.095
+C_Y_delta_a: 0.075
+C_ell_delta_a: 0.17
+C_n_delta_a: -0.011
+C_Y_delta_r: 0.19
+C_ell_delta_r: 0.0024
+C_n_delta_r: -0.069
+
+# Prop Params
+D_prop: 0.508
+
+# Motor Params
+K_V: 145.0
+KQ: 0.0658572178
+R_motor: 0.042
+i0: 1.5
+
+# Inputs
+ncells: 12
+V_max: 44.4
+
+# Coefficients from prop_data fit
+C_Q2: -0.01664
+C_Q1: 0.004970
+C_Q0: 0.005230
+C_T2: -0.1079
+C_T1: -0.06044
+C_T0: 0.09357
+
+# Gamma parameters from the book
+gamma: 1.43562344
+gamma1: 0.121471519
+gamma2: 0.77465450132
+gamma3: 1.22252516579
+gamma4: 0.08386600319
+gamma5: 0.8234361233
+gamma6: 0.10607929515
+gamma7: -0.268263120585
+gamma8: 0.57424529095
+
+# C values on pg 62 of book
+C_p_0: 0.0
+C_p_beta: -0.153160497
+C_p_p: -0.6190915913
+C_p_r: 0.29834564417
+C_p_delta_a: 0.20737025581
+C_p_delta_r: -0.002846150241
+C_r_0: 0.0
+C_r_beta: 0.0310173258246
+C_r_p: -0.0031487365516
+C_r_r: -0.033586018427
+C_r_delta_a: 0.00794052234
+C_r_delta_r: -0.03394216467
+
+

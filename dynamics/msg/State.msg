@@ -1,5 +1,5 @@
 # State message for the MAV. Can be used for both true states and estimated
-
+Header header
 float32 pn   # north mav_position
 float32 pe   # east mav_position
 float32 h    # altitude
@@ -17,6 +17,6 @@ float32 gamma   #flight path angle
 float32 chi      #course angle
 float32 wn     # wind north
 float32 we     # wind east
-float32 bx     # gyro bias x
-float32 by     # gyro bias y
-float32 bz     # gyro bias z
+float32 bx
+float32 by
+float32 bz

@@ -1,0 +1,4 @@
+<launch>
+  <rosparam command="load" file="$(find dynamics)/param/plane_params.yaml"/>
+  <node name="mav" pkg="dynamics" type="dynamics" output="screen"/>
+</launch>
