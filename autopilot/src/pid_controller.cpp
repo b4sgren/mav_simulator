@@ -37,7 +37,7 @@ namespace control
     double u_unsat{kp_ * error + ki_ * integrator_ - kd_ * ydot_};
     double u_sat{saturate(u_unsat)};
 
-    if(!ki_ == 0)
+    if(ki_ != 0)
       antiWindUp(u_unsat, u_sat, dt);
 
     return u_sat;
@@ -51,7 +51,7 @@ namespace control
     double u_unsat{kp_ * error + ki_ * integrator_ - kd_ * ydot};
     double u_sat{saturate(u_unsat)};
 
-    if(!ki_ == 0)
+    if(ki_ != 0)
       antiWindUp(u_unsat, u_sat, dt);
 
     return u_sat;
@@ -69,6 +69,7 @@ namespace control
     double a2 = 2.0 / (2.0 * sigma_ + dt);
 
     ydot_ = a1 * ydot_ + a2 * (y - yprev_);
+    yprev_ = y;
   }
 
   void PID_Controller::antiWindUp(double u_unsat, double u, double dt)
