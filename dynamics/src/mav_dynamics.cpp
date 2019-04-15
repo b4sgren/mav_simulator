@@ -6,9 +6,15 @@ namespace dyn
 {
 Dynamics::Dynamics() : nh_(ros::NodeHandle()), nh_p_("~")
 {
-  Ts_ = 0.02;
+  Ts_ = 0.005;
   alpha_ = 0.0;
   beta_ = 0.0;
+
+  double de{-1.24778073e-1}, dt{6.76752115e-1}, da{1.83617600e-3}, dr{-3.0262668e-4}; //Initialize close to trim
+  delta_r = dr;
+  delta_a = da;
+  delta_t = dt;
+  delta_e = de;
 
   loadParams();
   forces_ = Eigen::Matrix<double, 6, 1>::Zero();
@@ -29,6 +35,66 @@ Dynamics::Dynamics() : nh_(ros::NodeHandle()), nh_p_("~")
 
 Dynamics::~Dynamics(){}
 
+void Dynamics::run()
+{
+    ros::Rate rate = 200;
+    while(ros::ok())
+    {
+        propogateDynamics();
+        //publish true state
+        ros::spinOnce();
+        rate.sleep();
+    }
+}
+
+void Dynamics::propogateDynamics()
+{
+    //calc forces and moments
+    calculateForcesAndMoments();
+
+    //4th order Runge-Kutta
+    StateVec k1 = derivatives(x_);
+    StateVec k2 = derivatives(x_ + Ts_/2.0 * k1);
+    StateVec k3 = derivatives(x_ + Ts_/2.0 * k2);
+    StateVec k4 = derivatives(x_ + Ts_ * k3);
+    x_ += Ts_/6.0 * (k1 + 2*k2 + 2*k3 + k4);
+
+    //normalize the quaternion
+    Eigen::Vector4d e = x_.segment<4>(ATT);
+    double norm_e = sqrt(e.transpose() * e);
+    e = e / norm_e;
+    x_.segment<4>(ATT) = e;
+
+    //update and publish state
+    updateVelocityData(windg_);
+    calcGammaAndChi();
+    dynamics::State state;
+    state.pn = x_(POS);
+    state.pe = x_(POS+1);
+    state.h = -x_(POS+2);
+    Eigen::Vector3d euler = tools::Quaternion2Euler(x_.segment<4>(ATT));
+    state.phi = euler(0);
+    state.theta = euler(1);
+    state.psi = euler(2);
+    state.p = x_(OMEGA);
+    state.q = x_(OMEGA+1);
+    state.r = x_(OMEGA+2);
+    state.Va = Va_;
+    state.alpha = alpha_;
+    state.beta = beta_;
+    state.wn = wind_(0);
+    state.we = wind_(1);
+    state.Vg = sqrt(x_.segment<3>(VEL).transpose() * x_.segment<3>(VEL));
+    state.gamma = flight_path_;
+    state.chi = chi_;
+    state.bx = 0.0;
+    state.by = 0.0;
+    state.bz = 0.0;
+    state.header.stamp = ros::Time::now();
+
+    state_pub.publish(state);
+}
+
 void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
 {
   //update wind
@@ -45,56 +111,10 @@ void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
 
 void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
 {
-  //get time
-  double t = ros::Time::now().toSec();
-  Ts_ = t - tprev;
-  tprev = t;
-//  Ts_ = 0.02;
-
-  //calc forces and moments
-  calculateForcesAndMoments(msg);
-
-  //4th order Runge-Kutta
-  StateVec k1 = derivatives(x_);
-  StateVec k2 = derivatives(x_ + Ts_/2.0 * k1);
-  StateVec k3 = derivatives(x_ + Ts_/2.0 * k2);
-  StateVec k4 = derivatives(x_ + Ts_ * k3);
-  x_ += Ts_/6.0 * (k1 + 2*k2 + 2*k3 + k4);
-
-  //normalize the quaternion
-  Eigen::Vector4d e = x_.segment<4>(ATT);
-  double norm_e = sqrt(e.transpose() * e);
-  e = e / norm_e;
-  x_.segment<4>(ATT) = e;
-
-  //update and publish state
-  updateVelocityData(windg_);
-  calcGammaAndChi();
-  dynamics::State state;
-  state.pn = x_(POS);
-  state.pe = x_(POS+1);
-  state.h = -x_(POS+2);
-  Eigen::Vector3d euler = tools::Quaternion2Euler(x_.segment<4>(ATT));
-  state.phi = euler(0);
-  state.theta = euler(1);
-  state.psi = euler(2);
-  state.p = x_(OMEGA);
-  state.q = x_(OMEGA+1);
-  state.r = x_(OMEGA+2);
-  state.Va = Va_;
-  state.alpha = alpha_;
-  state.beta = beta_;
-  state.wn = wind_(0);
-  state.we = wind_(1);
-  state.Vg = sqrt(x_.segment<3>(VEL).transpose() * x_.segment<3>(VEL));
-  state.gamma = flight_path_;
-  state.chi = chi_;
-  state.bx = 0.0;
-  state.by = 0.0;
-  state.bz = 0.0;
-  state.header.stamp = ros::Time::now();
-
-  state_pub.publish(state);
+  delta_a = msg->da;
+  delta_r = msg->dr;
+  delta_t = msg->dt;
+  delta_e = msg->de;
 }
 
 StateVec Dynamics::derivatives(const StateVec& x)
@@ -168,7 +188,7 @@ void Dynamics::calcGammaAndChi()
     chi_ *= -1;
 }
 
-void Dynamics::calculateForcesAndMoments(const dynamics::ControlInputsConstPtr &msg)
+void Dynamics::calculateForcesAndMoments()
 {
   //Calculate gravity
   Eigen::Matrix3d R_v2b = tools::Quaternion2Rotation(x_.segment<4>(ATT)).transpose();
@@ -176,11 +196,9 @@ void Dynamics::calculateForcesAndMoments(const dynamics::ControlInputsConstPtr &
   forces_.segment<3>(F) = R_v2b * weight;
 
   //update other forces
-  double de{msg->de}, dt{msg->dt}, da{msg->da}, dr{msg->dr};
-//  double de{-1.24778073e-1}, dt{6.76752115e-1}, da{1.83617600e-3}, dr{-3.0262668e-4}; //This is just for verification that this all works
-  calculateLongitudinalForces(de);
-  calculateLateralForces(da, dr);
-  calculateThrustForce(dt);
+  calculateLongitudinalForces(delta_e);
+  calculateLateralForces(delta_a, delta_r);
+  calculateThrustForce(delta_t);
 }
 
 void Dynamics::calculateLongitudinalForces(double de)

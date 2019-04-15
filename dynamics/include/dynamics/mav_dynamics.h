@@ -29,6 +29,7 @@ public:
 
   Dynamics();
   ~Dynamics();
+  void run();
 
 private:
   ros::NodeHandle nh_;
@@ -46,9 +47,10 @@ private:
   void inputCallback(const dynamics::ControlInputsConstPtr &msg);
 
   //Other functions
+  void propogateDynamics();
   void updateVelocityData(const Eigen::Vector3d& gust);
   void calcGammaAndChi();
-  void calculateForcesAndMoments(const dynamics::ControlInputsConstPtr &msg);
+  void calculateForcesAndMoments();
   void calculateLongitudinalForces(double de);
   void calculateLateralForces(double da, double dr);
   void calculateThrustForce(double dt);
@@ -68,6 +70,7 @@ private:
   double mass, gamma, gamma1, gamma2, gamma3, gamma4, gamma5, gamma6, gamma7, gamma8;
   double Jy, g_;
   bool wind_init{false};
+  double delta_r, delta_a, delta_t, delta_e;
 
   double M_, rho, S_wing, c, alpha0, e, AR, b;
   double CL_0, CL_alpha, CL_q, CL_de;

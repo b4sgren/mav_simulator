@@ -54,7 +54,6 @@ namespace control
     double t = ros::Time::now().toSec();
     double dt = t - tprev_;
     tprev_ = t;
-//    dt = 0.02;
 
     double phi_cmd = course_from_roll.update(chi_ref_, msg->chi, dt, true) + phi_ff_ref_;
     double da = roll_from_aileron.updateWithRate(phi_cmd, msg->phi, msg->p, dt);
@@ -91,25 +90,6 @@ namespace control
     Va_ref_= msg-> Va_cmd;
     h_ref_ = msg->h_cmd;
     phi_ff_ref_ = msg->phi_ff;
-
-    //For debugging purposes
-//      chi_ref_ = 0.0;
-//      Va_ref_= 25.0;
-//      h_ref_ = 100.0;
-//      phi_ff_ref_ = 0.0;
-
-    //For first time to get things kicked off. Trim conditions
-    dynamics::ControlInputs deltas;
-    deltas.header.stamp = ros::Time::now();
-    deltas.da = 1.80184679e-3;
-    deltas.dt = .676753313;
-    deltas.dr = -320369153e-4;
-    deltas.de = -.124777967;
-    if(starting)
-    {
-        delta_pub.publish(deltas);
-        starting = false;
-    }
   }
 
   double Autopilot::radians(double deg)
