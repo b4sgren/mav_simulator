@@ -40,8 +40,8 @@ void Dynamics::run()
     ros::Rate rate = 200;
     while(ros::ok())
     {
+        //propogates and publishes the state
         propogateDynamics();
-        //publish true state
         ros::spinOnce();
         rate.sleep();
     }
