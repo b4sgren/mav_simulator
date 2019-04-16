@@ -37,18 +37,18 @@ namespace dyn
 
  void WindSim::timerCallback(const ros::TimerEvent& event)
  {
-//   Eigen::Vector3d w = getRandomVector();
-//   wind_gust_ = wind_gust_ + Ts_ * (A_ * wind_gust_ + B_ * w);
+   Eigen::Vector3d w = getRandomVector();
+   wind_gust_ = wind_gust_ + Ts_ * (A_ * wind_gust_ + B_ * w);
 
-//   Eigen::Vector3d temp = C_ * wind_gust_;
+   Eigen::Vector3d temp = C_ * wind_gust_;
 
    dynamics::Wind wind_msg;
    wind_msg.wn = wind_ss_(0);
    wind_msg.we = wind_ss_(1);
    wind_msg.wd = wind_ss_(2);
-   wind_msg.gust_n = 0.0; //temp(0);
-   wind_msg.gust_e = 0.0; //temp(1);
-   wind_msg.gust_d = 0.0; //temp(2);
+   wind_msg.gust_n = temp(0);
+   wind_msg.gust_e = temp(1);
+   wind_msg.gust_d = temp(2);
    wind_msg.header.stamp = ros::Time::now();
 
    wind_pub.publish(wind_msg);
