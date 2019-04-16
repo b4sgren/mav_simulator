@@ -7,5 +7,6 @@
   <node pkg="estimator" type="ekf" name="ekf" output="screen" />
   <node pkg="autopilot" type="autopilot" name="autopilot" output="screen" />
   <node pkg="dynamics" type="windsim" name="wind" output="screen" />
+  <node pkg="mav_viewer" type="mav_viewer_node.py" name="MAV" />
 
 </launch>

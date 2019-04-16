@@ -98,7 +98,6 @@ class MAV_Viewer:
         self.window.opts['center'] = view_location
 
         self.application.processEvents() #redraw
-        print("Here")
 
     ### Private Functions
     def translatePoints(self, points, T):
