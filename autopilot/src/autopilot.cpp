@@ -41,7 +41,7 @@ namespace control
 
     delta_pub = nh_.advertise<dynamics::ControlInputs>("surface_commands", 1);
     commanded_state_pub = nh_.advertise<dynamics::State>("commanded_states", 1);
-    commands_sub = nh_.subscribe("commands", 1, &Autopilot::commandsCallback, this); // TODO Add a commanded message
+    commands_sub = nh_.subscribe("commands", 1, &Autopilot::commandsCallback, this);
     est_state_sub = nh_.subscribe("estimated_states", 1, &Autopilot::estStateCallback, this);
 
     tprev_ = ros::Time::now().toSec();
