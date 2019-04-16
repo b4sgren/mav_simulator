@@ -174,8 +174,8 @@ void Dynamics::updateVelocityData(const Eigen::Vector3d& gust)
 
 void Dynamics::calcGammaAndChi()
 {
-  Eigen::Matrix3d R_v2b = tools::Quaternion2Rotation(x_.segment<4>(ATT));
-  Eigen::Vector3d Vg = R_v2b * x_.segment<3>(VEL);
+  Eigen::Matrix3d R_b2v = tools::Quaternion2Rotation(x_.segment<4>(ATT));
+  Eigen::Vector3d Vg = R_b2v * x_.segment<3>(VEL);
 
   flight_path_ = asin(-Vg(2)/(tools::norm(Vg)));
 
@@ -184,7 +184,7 @@ void Dynamics::calcGammaAndChi()
 
   double temp = e1.transpose() * Vgh;
   chi_ = acos(temp/tools::norm(Vgh));
-  if(Vgh(0) < 0)
+  if(Vgh(1) < 0)
     chi_ *= -1;
 }
 

@@ -34,9 +34,9 @@ namespace control
     altitude_from_pitch = PID_Controller(alt_kp, 0, alt_ki, radians(30), -radians(30));
     airspeed_from_throttle = PID_Controller(throttle_kp, 0, throttle_ki, 1.0, 0.0);
 
-    chi_ref_ = radians(45); //works for 45 degrees. Not - degrees though
+    chi_ref_ = radians(-110); //works for 45 degrees. Not - degrees  and >90
     Va_ref_ = 25.0;
-    h_ref_ = 140.0;
+    h_ref_ = 110.0;
     phi_ff_ref_ = 0.0;
 
     delta_pub = nh_.advertise<dynamics::ControlInputs>("surface_commands", 1);
@@ -94,7 +94,7 @@ namespace control
 
   double Autopilot::radians(double deg)
   {
-    double pi{3.14159625};
+    double pi{3.14159265};
     return deg * pi/180.0;
   }
 
