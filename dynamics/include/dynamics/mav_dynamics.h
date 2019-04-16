@@ -59,7 +59,7 @@ private:
 
   double Ts_, Va_, alpha_, beta_, chi_, flight_path_;
   StateVec x_;
-  Eigen::Vector3d wind_, windg_;
+  Eigen::Vector3d wind_, windg_, wind_ss;
   Eigen::Matrix<double, 6, 1> forces_;
 
   const double PI{3.14159265};
@@ -69,7 +69,6 @@ private:
   //Parameters from the yaml file
   double mass, gamma, gamma1, gamma2, gamma3, gamma4, gamma5, gamma6, gamma7, gamma8;
   double Jy, g_;
-  bool wind_init{false};
   double delta_r, delta_a, delta_t, delta_e;
 
   double M_, rho, S_wing, c, alpha0, e, AR, b;

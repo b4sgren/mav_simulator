@@ -22,8 +22,8 @@ Dynamics::Dynamics() : nh_(ros::NodeHandle()), nh_p_("~")
   flight_path_ = 0.0;
 
   windg_ = Eigen::Vector3d::Zero();
+  wind_ss = Eigen::Vector3d::Zero();
   wind_ = Eigen::Vector3d::Zero();
-  wind_init = false;
 
   t0 = ros::Time::now().toSec();
   tprev = t0;
@@ -97,12 +97,9 @@ void Dynamics::propogateDynamics()
 
 void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
 {
-  //update wind
-  if(!wind_init)
-  {
-    wind_ << msg->wn, msg->we, msg->wd;
-    wind_init = true;
-  }
+  wind_ss(0) = msg->wn;
+  wind_ss(1) = msg->we;
+  wind_ss(2) = msg->wd;
   windg_(0) = msg->gust_n;
   windg_(1) = msg->gust_e;
   windg_(2) = msg->gust_d;
@@ -150,13 +147,15 @@ StateVec Dynamics::derivatives(const StateVec& x)
 
 void Dynamics::updateVelocityData(const Eigen::Vector3d& gust)
 {
-  Eigen::Matrix3d R_b2v = tools::Quaternion2Rotation(x_.segment<4>(ATT));
-  wind_ = R_b2v * wind_ + gust;
+  Eigen::Matrix3d R_v2b = tools::Quaternion2Rotation(x_.segment<4>(ATT)).transpose();
+  wind_ = R_v2b * wind_ss + gust;
   Eigen::Vector3d V = x_.segment<3>(VEL);
 
   //Compute Va
   Eigen::Vector3d Vr = V - wind_;
   Va_ = sqrt(Vr.transpose() * Vr);
+
+  wind_ = R_v2b.transpose() * wind_;
 
   //update angle of attack
   if(Vr(0) == 0)
