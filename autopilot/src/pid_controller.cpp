@@ -25,11 +25,11 @@ namespace control
     double error{yref - y};
     if(wrap_flag)
     {
-      const double PI{3.14159625};
+      const double PI{3.14159265};
       while(error > PI)
-        error -= 2 * PI;
+        error -= (2 * PI);
       while(error <= -PI)
-        error += 2 * PI;
+        error += (2 * PI);
     }
     integrateError(error, dt);
     differentiate(y, dt);
