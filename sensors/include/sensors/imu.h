@@ -4,11 +4,14 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Imu.h>
 #include <dynamics/State.h>
+#include <Eigen/Core>
 
 namespace sensors
 {
     class IMU
     {
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
         public:
         IMU();
 
@@ -17,6 +20,8 @@ namespace sensors
         void stateCallback(const dynamics::StateConstPtr& msg);
 
         //Other functions
+        Eigen::Matrix<double, 6, 1> addNoise();
+        void readParams();
 
         //Ros variables
         ros::NodeHandle nh_;
