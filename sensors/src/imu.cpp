@@ -17,8 +17,25 @@ namespace sensors
        state_sub_ = nh_.subscribe("true_states", 1, &IMU::stateCallback, this);
        imu_pub_ = nh_.advertise<sensor_msgs::Imu>("imu", 1);
     }
+    
+    void IMU::run()
+    {
+        ros::Rate rate = 125;
+
+        while(ros::ok())
+        {
+            generateReading();
+            ros::spinOnce();
+            rate.sleep();
+        }
+    }
 
     void IMU::stateCallback(const dynamics::StateConstPtr& msg)
+    {
+
+    }
+
+    void IMU::generateReading()
     {
 
     }

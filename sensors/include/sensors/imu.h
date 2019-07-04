@@ -22,6 +22,8 @@ namespace sensors
         //Other functions
         Eigen::Matrix<double, 6, 1> addNoise();
         void readParams();
+        void run();
+        void generateReading();
 
         //Ros variables
         ros::NodeHandle nh_;

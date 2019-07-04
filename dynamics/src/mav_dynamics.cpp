@@ -37,7 +37,7 @@ Dynamics::~Dynamics(){}
 
 void Dynamics::run()
 {
-    ros::Rate rate = 200;
+    ros::Rate rate = 500; 
     while(ros::ok())
     {
         //propogates and publishes the state
