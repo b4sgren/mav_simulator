@@ -5,6 +5,17 @@ namespace sensors
     IMU::IMU(): nh_(ros::NodeHandle()), nh_p_("~")
     {
        readParams();
+
+       double covar(stddev_a_ * stddev_a_);
+       Eigen::Vector3d temp(covar, covar, covar);
+       accel_covar_ = temp.asDiagonal();
+
+       covar = stddev_g_ * stddev_g_;
+       Eigen::Vector3d temp2(covar, covar, covar);
+       gyro_covar_ = temp2.asDiagonal();
+       
+       state_sub_ = nh_.subscribe("true_states", 1, &IMU::stateCallback, this);
+       imu_pub_ = nh_.advertise<sensor_msgs::Imu>("imu", 1);
     }
 
     void IMU::stateCallback(const dynamics::StateConstPtr& msg)

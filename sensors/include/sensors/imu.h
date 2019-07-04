@@ -31,6 +31,8 @@ namespace sensors
         ros::Publisher imu_pub_;
 
         //Other variables
+        Eigen::Matrix3d accel_covar_;
+        Eigen::Matrix3d gyro_covar_;
         double stddev_a_;
         double stddev_g_;
         double accel_bias_x_;
