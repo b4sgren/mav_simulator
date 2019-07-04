@@ -1,0 +1,24 @@
+### List of parameters for the sensors
+
+accel_sigma: .024525
+accel_x_bias: 0.0
+accel_y_bias: 0.0
+accel_z_bias: 0.0
+
+gyro_sigma: .002268928
+gyro_x_bias: 0.0
+gyro_y_bias: 0.0
+gyro_z_bias: 0.0
+
+pitot_tube_static_sigma: 10.0
+pitot_tube_differential_sigma: 2.0
+
+mag_beta: .0017683883
+mag_sigma: .0005235897
+
+gps_beta: .0009090901
+gps_n_sigma: 0.21
+gps_e_sigma: 0.21
+gps_h_sigma: 0.40
+gps_Vg_sigma: 0.05
+gps_course_sigma: 0.005
