@@ -75,7 +75,10 @@ namespace sensors
 
     Eigen::Vector3d IMU::generateNoise()
     {
-
+//        std::random_device rd;
+//        std::mt19937 gen(rd());
+//        std::normal_distribution<> dis(0.0, 1.0/sqrt(covar));
+//        return dis(gen);
     }
 
     void IMU::readParams()
