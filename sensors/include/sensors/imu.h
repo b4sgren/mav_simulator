@@ -3,6 +3,7 @@
 
 #include <ros/ros.h>
 #include <sensor_msgs/Imu.h>
+#include <geometry_msgs/Wrench.h>
 #include <dynamics/State.h>
 #include <Eigen/Core>
 
@@ -18,6 +19,7 @@ namespace sensors
         private:
         //Callbacks
         void stateCallback(const dynamics::StateConstPtr& msg);
+        void forceCallback(const geometry_msgs::WrenchConstPtr& msg);
 
         //Other functions
         Eigen::Matrix<double, 6, 1> addNoise();
@@ -30,6 +32,7 @@ namespace sensors
         ros::NodeHandle nh_p_;
         
         ros::Subscriber state_sub_;
+        ros::Subscriber force_sub_;
         ros::Publisher imu_pub_;
 
         //Other variables
@@ -43,6 +46,7 @@ namespace sensors
         double gyro_bias_x_;
         double gyro_bias_y_;
         double gyro_bias_z_;
+        double mass_;
 
     };
 }

@@ -2,6 +2,7 @@
 #define MAV_DYNAMICS
 
 #include <ros/ros.h>
+#include <geometry_msgs/Wrench.h>
 #include <dynamics/State.h>
 #include <dynamics/Wind.h>
 #include <dynamics/ControlInputs.h>
@@ -41,6 +42,7 @@ private:
 
   //Publishers
   ros::Publisher state_pub;
+  ros::Publisher force_pub;
 
   //callbacks
   void windCallback(const dynamics::WindConstPtr &msg);

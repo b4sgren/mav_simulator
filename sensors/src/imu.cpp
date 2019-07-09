@@ -15,6 +15,7 @@ namespace sensors
        gyro_covar_ = temp2.asDiagonal();
        
        state_sub_ = nh_.subscribe("true_states", 1, &IMU::stateCallback, this);
+       force_sub_ = nh_.subscribe("forces", 1, &IMU::forceCallback, this);
        imu_pub_ = nh_.advertise<sensor_msgs::Imu>("imu", 1);
     }
     
@@ -31,6 +32,11 @@ namespace sensors
     }
 
     void IMU::stateCallback(const dynamics::StateConstPtr& msg)
+    {
+
+    }
+
+    void IMU::forceCallback(const geometry_msgs::WrenchConstPtr& msg)
     {
 
     }
@@ -56,5 +62,6 @@ namespace sensors
         nh_.param<double>("gyro_x_bias", gyro_bias_x_, 0.0);
         nh_.param<double>("gyro_y_bias", gyro_bias_y_, 0.0);
         nh_.param<double>("gyro_z_bias", gyro_bias_z_, 0.0);
+        nh_.param<double>("mass", mass_, 10.0);
     }
 }

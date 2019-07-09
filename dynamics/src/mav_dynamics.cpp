@@ -31,6 +31,7 @@ Dynamics::Dynamics() : nh_(ros::NodeHandle()), nh_p_("~")
   wind_sub = nh_.subscribe("wind", 1, &Dynamics::windCallback, this);
   inputs_sub = nh_.subscribe("surface_commands", 1, &Dynamics::inputCallback, this);
   state_pub = nh_.advertise<dynamics::State>("true_states", 1);
+  force_pub = nh_.advertise<geometry_msgs::Wrench>("forces", 1);
 }
 
 Dynamics::~Dynamics(){}
@@ -92,7 +93,16 @@ void Dynamics::propogateDynamics()
     state.bz = 0.0;
     state.header.stamp = ros::Time::now();
 
+    geometry_msgs::Wrench wrench;
+    wrench.force.x = forces_(F);
+    wrench.force.y = forces_(F+1);
+    wrench.force.z = forces_(F+2);
+    wrench.torque.x = forces_(M);
+    wrench.torque.y = forces_(M+1);
+    wrench.torque.z = forces_(M+2);
+
     state_pub.publish(state);
+    force_pub.publish(wrench);
 }
 
 void Dynamics::windCallback(const dynamics::WindConstPtr &msg)

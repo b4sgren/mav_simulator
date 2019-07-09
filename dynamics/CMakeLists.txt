@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  geometry_msgs
   message_generation
   tools
 )
@@ -75,6 +76,7 @@ find_package(Eigen3 REQUIRED)
  generate_messages(
    DEPENDENCIES
    std_msgs
+   geometry_msgs
  )
 
 ################################################
@@ -109,7 +111,7 @@ find_package(Eigen3 REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
   LIBRARIES tools 
-  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime tools
+  CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs message_runtime tools
 #  DEPENDS system_lib
 )
 
