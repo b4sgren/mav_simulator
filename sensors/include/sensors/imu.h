@@ -14,6 +14,12 @@ namespace sensors
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
         public:
+        enum
+        {
+            F = 0,
+            M = 3
+        };
+
         IMU();
 
         private:
@@ -38,6 +44,9 @@ namespace sensors
         //Other variables
         Eigen::Matrix3d accel_covar_;
         Eigen::Matrix3d gyro_covar_;
+        Eigen::Matrix<double, 6, 1> forces_;
+        Eigen::Vector3d Omega_;
+        Eigen::Vector3d A_ypr_;
         double stddev_a_;
         double stddev_g_;
         double accel_bias_x_;

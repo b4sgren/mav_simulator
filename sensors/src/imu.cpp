@@ -13,6 +13,9 @@ namespace sensors
        covar = stddev_g_ * stddev_g_;
        Eigen::Vector3d temp2(covar, covar, covar);
        gyro_covar_ = temp2.asDiagonal();
+       forces_ = Eigen::Matrix<double, 6, 1>::Zero();
+       Omega_ = Eigen::Vector3d::Zero();
+       A_ypr_ = Eigen::Vector3d::Zero();
        
        state_sub_ = nh_.subscribe("true_states", 1, &IMU::stateCallback, this);
        force_sub_ = nh_.subscribe("forces", 1, &IMU::forceCallback, this);
@@ -33,12 +36,22 @@ namespace sensors
 
     void IMU::stateCallback(const dynamics::StateConstPtr& msg)
     {
-
+        Omega_(0) = msg->p;
+        Omega_(1) = msg->q;
+        Omega_(2) = msg->r;
+        A_ypr_(0) = msg->phi;
+        A_ypr_(1) = msg->theta;
+        A_ypr_(2) = msg->psi;
     }
 
     void IMU::forceCallback(const geometry_msgs::WrenchConstPtr& msg)
     {
-
+        forces_(F) = msg->force.x;
+        forces_(F+1) = msg->force.y;
+        forces_(F+2) = msg->force.z;
+        forces_(M) = msg->torque.x;
+        forces_(M+1) = msg->torque.y;
+        forces_(M+2) = msg->torque.z;
     }
 
     void IMU::generateReading()
