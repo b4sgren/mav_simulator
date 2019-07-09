@@ -28,7 +28,7 @@ namespace sensors
         void forceCallback(const geometry_msgs::WrenchConstPtr& msg);
 
         //Other functions
-        Eigen::Matrix<double, 6, 1> addNoise();
+        Eigen::Vector3d generateNoise();
         void readParams();
         void run();
         void generateReading();
@@ -56,6 +56,7 @@ namespace sensors
         double gyro_bias_y_;
         double gyro_bias_z_;
         double mass_;
+        double g_;
 
     };
 }

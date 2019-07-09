@@ -1,4 +1,6 @@
 #include "sensors/imu.h"
+#include <cmath>
+#include <random>
 
 namespace sensors
 {
@@ -56,10 +58,22 @@ namespace sensors
 
     void IMU::generateReading()
     {
+        Eigen::Vector3d gyro_bias;
+        gyro_bias << gyro_bias_x_, gyro_bias_y_, gyro_bias_z_;
+
+        Eigen::Vector3d accel_bias;
+        accel_bias << accel_bias_x_, accel_bias_y_, accel_bias_z_;
+
+        Eigen::Vector3d g_vec;
+        g_vec << sin(A_ypr_(1)), -cos(A_ypr_(1)) * sin(A_ypr_(0)), -cos(A_ypr_(1)) * cos(A_ypr_(0));
+        
+        Eigen::Vector3d gyro_reading = Omega_ + gyro_bias + generateNoise() * stddev_g_;
+
+        Eigen::Vector3d accel_reading = forces_.segment<3>(0)/mass_ + accel_bias + g_vec * g_ + generateNoise() * stddev_a_;
 
     }
 
-    Eigen::Matrix<double, 6, 1> IMU::addNoise()
+    Eigen::Vector3d IMU::generateNoise()
     {
 
     }
@@ -76,5 +90,6 @@ namespace sensors
         nh_.param<double>("gyro_y_bias", gyro_bias_y_, 0.0);
         nh_.param<double>("gyro_z_bias", gyro_bias_z_, 0.0);
         nh_.param<double>("mass", mass_, 10.0);
+        nh_.param<double>("gravity", g_, 9.81);
     }
 }
