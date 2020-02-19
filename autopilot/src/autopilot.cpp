@@ -1,5 +1,5 @@
 #include "autopilot/autopilot.h"
-#include <dynamics/ControlInputs.h>
+#include <mav_msgs/ControlInputs.h>
 
 namespace control
 {
@@ -39,8 +39,8 @@ namespace control
     h_ref_ = 110.0;
     phi_ff_ref_ = 0.0;
 
-    delta_pub = nh_.advertise<dynamics::ControlInputs>("surface_commands", 1);
-    commanded_state_pub = nh_.advertise<dynamics::State>("commanded_states", 1);
+    delta_pub = nh_.advertise<mav_msgs::ControlInputs>("surface_commands", 1);
+    commanded_state_pub = nh_.advertise<mav_msgs::State>("commanded_states", 1);
     commands_sub = nh_.subscribe("commands", 1, &Autopilot::commandsCallback, this);
     est_state_sub = nh_.subscribe("estimated_states", 1, &Autopilot::estStateCallback, this);
 
@@ -49,7 +49,7 @@ namespace control
 
   Autopilot::~Autopilot(){}
 
-  void Autopilot::estStateCallback(const dynamics::StateConstPtr &msg)
+  void Autopilot::estStateCallback(const mav_msgs::StateConstPtr &msg)
   {
     double t = ros::Time::now().toSec();
     double dt = t - tprev_;
@@ -66,7 +66,7 @@ namespace control
     double de = pitch_from_elevator.updateWithRate(theta_cmd, msg->theta, msg->q, dt);
     double delt = airspeed_from_throttle.update(Va_ref_, msg->Va, dt, false);
 
-    dynamics::ControlInputs deltas;
+    mav_msgs::ControlInputs deltas;
     deltas.header.stamp = ros::Time::now();
     deltas.da = da;
     deltas.dt = delt;
@@ -74,7 +74,7 @@ namespace control
     deltas.de = de;
     delta_pub.publish(deltas);
 
-    dynamics::State cmd_state;
+    mav_msgs::State cmd_state;
     cmd_state.header.stamp = ros::Time::now();
     cmd_state.h = h_ref_;
     cmd_state.Va = Va_ref_;
@@ -84,7 +84,7 @@ namespace control
     commanded_state_pub.publish(cmd_state);
   }
 
-  void Autopilot::commandsCallback(const autopilot::CommandsConstPtr &msg)
+  void Autopilot::commandsCallback(const mav_msgs::CommandsConstPtr &msg)
   {
     chi_ref_ = radians(msg->chi_cmd);
     Va_ref_= msg-> Va_cmd;

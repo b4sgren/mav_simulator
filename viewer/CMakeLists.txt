@@ -101,7 +101,7 @@ catkin_python_setup()
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES state_plotter
-  CATKIN_DEPENDS dynamics
+  CATKIN_DEPENDS mav_msgs
 #  DEPENDS system_lib
 )
 

@@ -2,7 +2,7 @@
 #define KALMANFILTER
 
 #include <ros/ros.h>
-#include "dynamics/State.h"
+#include "mav_msgs/State.h"
 
 namespace est
 {
@@ -13,7 +13,7 @@ namespace est
     ~EKF();
 
   private:
-    void stateCallback(const dynamics::StateConstPtr &msg);
+    void stateCallback(const mav_msgs::StateConstPtr &msg);
 
     ros::NodeHandle nh_;
     ros::NodeHandle nh_p;

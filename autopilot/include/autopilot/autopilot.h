@@ -4,8 +4,8 @@
 #include <ros/ros.h>
 #include <Eigen/Core>
 #include "autopilot/pid_controller.h"
-#include "dynamics/State.h"
-#include "autopilot/Commands.h"
+#include "mav_msgs/State.h"
+#include "mav_msgs/Commands.h"
 
 namespace control
 {
@@ -16,8 +16,8 @@ namespace control
     ~Autopilot();
 
   private:
-    void estStateCallback(const dynamics::StateConstPtr& msg);
-    void commandsCallback(const autopilot::CommandsConstPtr& msg);
+    void estStateCallback(const mav_msgs::StateConstPtr& msg);
+    void commandsCallback(const mav_msgs::CommandsConstPtr& msg);
 
     double radians(double deg);
 

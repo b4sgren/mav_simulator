@@ -2,8 +2,8 @@
 #define WIND_SIM
 
 #include <ros/ros.h>
-#include <dynamics/Wind.h>
-#include <dynamics/State.h>
+#include <mav_msgs/Wind.h>
+#include <mav_msgs/State.h>
 #include <Eigen/Core>
 
 namespace dyn
@@ -15,7 +15,7 @@ namespace dyn
     ~WindSim();
 
   private:
-    void stateCallback(const dynamics::StateConstPtr &msg);
+    void stateCallback(const mav_msgs::StateConstPtr &msg);
     void timerCallback(const ros::TimerEvent& event);
 
     double generate_random_double();

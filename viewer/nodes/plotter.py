@@ -2,7 +2,7 @@
 from __future__ import division
 
 import rospy
-from dynamics.msg import State
+from mav_msgs.msg import State
 import numpy as np
 
 from uav_plotter.Plotter import Plotter

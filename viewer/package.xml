@@ -50,7 +50,7 @@
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
 
-  <depend>dynamics</depend>
+  <depend>mav_msgs</depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

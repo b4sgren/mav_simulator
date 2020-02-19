@@ -2,9 +2,9 @@
 #define MAV_DYNAMICS
 
 #include <ros/ros.h>
-#include <dynamics/State.h>
-#include <dynamics/Wind.h>
-#include <dynamics/ControlInputs.h>
+#include <mav_msgs/State.h>
+#include <mav_msgs/Wind.h>
+#include <mav_msgs/ControlInputs.h>
 #include <Eigen/Core>
 #include <cmath>
 #include "tools/rotations.h"
@@ -43,8 +43,8 @@ private:
   ros::Publisher state_pub;
 
   //callbacks
-  void windCallback(const dynamics::WindConstPtr &msg);
-  void inputCallback(const dynamics::ControlInputsConstPtr &msg);
+  void windCallback(const mav_msgs::WindConstPtr &msg);
+  void inputCallback(const mav_msgs::ControlInputsConstPtr &msg);
 
   //Other functions
   void propogateDynamics();

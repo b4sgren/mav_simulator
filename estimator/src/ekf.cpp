@@ -5,14 +5,14 @@ namespace est
   EKF::EKF(): nh_(ros::NodeHandle()), nh_p("~")
   {
     state_sub = nh_.subscribe("true_states", 1, &EKF::stateCallback, this);
-    estState_pub = nh_.advertise<dynamics::State>("estimated_states", 1);
+    estState_pub = nh_.advertise<mav_msgs::State>("estimated_states", 1);
   }
 
   EKF::~EKF(){}
 
-  void EKF::stateCallback(const dynamics::StateConstPtr &msg)
+  void EKF::stateCallback(const mav_msgs::StateConstPtr &msg)
   {
-    dynamics::State estState;
+    mav_msgs::State estState;
     estState.header.stamp = ros::Time::now();
     estState.pn = msg->pn;
     estState.pe = msg->pe;

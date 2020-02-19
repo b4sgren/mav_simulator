@@ -30,7 +30,7 @@ Dynamics::Dynamics() : nh_(ros::NodeHandle()), nh_p_("~")
 
   wind_sub = nh_.subscribe("wind", 1, &Dynamics::windCallback, this);
   inputs_sub = nh_.subscribe("surface_commands", 1, &Dynamics::inputCallback, this);
-  state_pub = nh_.advertise<dynamics::State>("true_states", 1);
+  state_pub = nh_.advertise<mav_msgs::State>("true_states", 1);
 }
 
 Dynamics::~Dynamics(){}
@@ -68,7 +68,7 @@ void Dynamics::propogateDynamics()
     //update and publish state
     updateVelocityData(windg_);
     calcGammaAndChi();
-    dynamics::State state;
+    mav_msgs::State state;
     state.pn = x_(POS);
     state.pe = x_(POS+1);
     state.h = -x_(POS+2);
@@ -95,7 +95,7 @@ void Dynamics::propogateDynamics()
     state_pub.publish(state);
 }
 
-void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
+void Dynamics::windCallback(const mav_msgs::WindConstPtr &msg)
 {
   wind_ss(0) = msg->wn;
   wind_ss(1) = msg->we;
@@ -106,7 +106,7 @@ void Dynamics::windCallback(const dynamics::WindConstPtr &msg)
   updateVelocityData(windg_);
 }
 
-void Dynamics::inputCallback(const dynamics::ControlInputsConstPtr &msg)
+void Dynamics::inputCallback(const mav_msgs::ControlInputsConstPtr &msg)
 {
   delta_a = msg->da;
   delta_r = msg->dr;

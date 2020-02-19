@@ -28,7 +28,7 @@ namespace dyn
     C_ = Eigen::Matrix<double, 3, 5>::Zero();
 
     state_sub = nh_.subscribe("true_states", 1, &WindSim::stateCallback, this);
-    wind_pub = nh_.advertise<dynamics::Wind>("wind", 1);
+    wind_pub = nh_.advertise<mav_msgs::Wind>("wind", 1);
 
     timer_ = nh_.createTimer(ros::Duration(0.1), &WindSim::timerCallback, this);
   }
@@ -42,7 +42,7 @@ namespace dyn
 
    Eigen::Vector3d temp = C_ * wind_gust_;
 
-   dynamics::Wind wind_msg;
+   mav_msgs::Wind wind_msg;
    wind_msg.wn = wind_ss_(0);
    wind_msg.we = wind_ss_(1);
    wind_msg.wd = wind_ss_(2);
@@ -54,7 +54,7 @@ namespace dyn
    wind_pub.publish(wind_msg);
  }
 
- void WindSim::stateCallback(const dynamics::StateConstPtr &msg)
+ void WindSim::stateCallback(const mav_msgs::StateConstPtr &msg)
  {
    Va_ = msg->Va;
 
