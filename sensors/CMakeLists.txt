@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  Eigen3
 )
 
 catkin_package(
@@ -24,6 +25,8 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
 )
 
-
+add_executable(imu src/imu.cpp src/imu_node.cpp)
+target_link_libraries(imu ${catkin_LIBRARIES})
