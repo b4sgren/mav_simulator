@@ -4,6 +4,10 @@ namespace sensors
 {
 Imu::Imu()
 {
+    //Set Gyro Parameters
+    _omega = Eigen::Vector3d::Zero();
+    double sigma_gx, sigma_gy, sigma_gz;
+    nh_.param<double>()
 }
 
 Imu::~Imu()

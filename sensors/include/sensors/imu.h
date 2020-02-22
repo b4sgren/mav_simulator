@@ -10,6 +10,17 @@ namespace sensors
     class Imu
     {
     public:
+        enum
+          {
+            POS = 0,
+            VEL = 3,
+            ATT = 6,
+            OMEGA = 10,
+            F = 0,
+            M = 3
+          };
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
         Imu();
         ~Imu();
 
@@ -28,6 +39,7 @@ namespace sensors
         Eigen::Vector3d _omega;
         Eigen::Vector3d _gyro_bias;
         Eigen::Matrix3d _R_gyro;
+        double _mass;
     };
 }
 

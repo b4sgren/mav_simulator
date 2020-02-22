@@ -1,0 +1,25 @@
+# Accelerometer
+accel_sigma: .025 # m/s^2
+accel_bias_x: 0.0
+accel_bias_y: 0.0
+accel_bias_z: 0.0
+
+#Gyro
+gyro_sigma: 0.00227
+gyro_bias_x: 0.0
+gyro_bias_y: 0.0
+gyro_bias_z: 0.0
+
+# Pressure Sensor (Altitude)
+static_pres_sigma: 2.0 # in Pa 
+
+# Pressure Sensor (Airspeed)
+diff_pres_sigma: 1.0 #in Pa
+
+#GPS
+t_gps: 1.0 #GPS frequency
+gps_beta: 0.001
+gps_ne_sigma: 0.21
+gps_h_sigma: 0.4
+gps_Vg_sigma: 0.05
+gps_course_sigma: 0.005

@@ -13,12 +13,13 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   Eigen3
+  sensor_msgs
 )
 
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES sensors
-  CATKIN_DEPENDS mav_msgs roscpp rospy std_msgs
+  CATKIN_DEPENDS mav_msgs roscpp rospy std_msgs sensor_msgs
 #  DEPENDS system_lib
 )
 
